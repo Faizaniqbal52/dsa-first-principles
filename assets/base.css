@@ -431,3 +431,65 @@ pre .s { color: var(--good); }
 .gridwrap { display: flex; gap: 26px; flex-wrap: wrap; align-items: flex-start; }
 .gridwrap .lbl { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--machine-dim); margin-bottom: 8px; }
 
+
+/* ============================================================
+   Responsive + app-like polish (phone / tablet / desktop)
+   ============================================================ */
+
+/* Touch and text behaviour that makes it feel less like a web doc */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+body { -webkit-tap-highlight-color: transparent; }
+img, svg, video, pre, table { max-width: 100%; }
+button, .chip, a, input, label { touch-action: manipulation; }
+
+/* Notch / home-indicator aware: the sticky bar and content gutters
+   respect the device safe areas, and the bar fills the status-bar
+   strip when installed to the home screen. */
+.rail { padding-top: env(safe-area-inset-top); }
+.rail-inner,
+.wrap, .wide {
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
+}
+footer { padding-bottom: max(80px, calc(56px + env(safe-area-inset-bottom))); }
+
+/* Smooth momentum scrolling for the horizontal scrollers */
+.cells-outer, .machine, pre, .varlist { -webkit-overflow-scrolling: touch; }
+
+/* Real touch devices get comfortable 44px tap targets */
+@media (hover: none) and (pointer: coarse) {
+  button, .chip,
+  input[type="number"], input[type="text"] { min-height: 44px; }
+  .cp-opts button, .chips button { min-height: 48px; }
+}
+
+/* Phone: tighter rhythm, slightly smaller base text, roomier cards */
+@media (max-width: 640px) {
+  body { font-size: 17px; line-height: 1.65; }
+  section { padding: 40px 0 8px; }
+  .hero { padding: 40px 0 16px; }
+  h2 { font-size: 24px; }
+  h1 { margin-bottom: 14px; }
+  p.big { font-size: 19px; line-height: 1.5; }
+  .machine { padding: 18px 15px; border-radius: 14px; }
+  .problem, .check, .week, .cp, .lc, .next-card, .quest { padding: 20px 17px; }
+  .aside-me { padding: 13px 14px; }
+  .cards, .mods { gap: 12px; }
+  .rail-links a { padding-top: 7px; padding-bottom: 7px; }
+}
+
+/* Tablet: keep the readable column, a hair more air */
+@media (min-width: 641px) and (max-width: 1024px) {
+  body { font-size: 18px; }
+  .wide { max-width: 820px; }
+}
+
+/* Desktop: comfortable reading size */
+@media (min-width: 1025px) {
+  body { font-size: 18px; }
+}
+
+/* Installed-app mode: no page-level horizontal bounce */
+@media (display-mode: standalone) {
+  html, body { overscroll-behavior-y: contain; }
+}
