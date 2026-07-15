@@ -1,6 +1,9 @@
 # First Principles: a why-first DSA course
 
-**Live site:** https://faizaniqbal52.github.io/dsa-first-principles/
+## ▶ Open the course: **https://faizaniqbal52.github.io/dsa-first-principles/**
+
+That link is the whole site. Just click it, no setup, nothing to install. It
+opens on the course map, and you click a live module to start.
 
 An interactive course that teaches Data Structures and Algorithms the way you
 actually build deep understanding: **why an idea was invented before what it is.**
@@ -9,8 +12,8 @@ No definitions dropped on you cold, no "solve 500 problems and hope it clicks."
 Coding questions come *last*, after you understand the problem the structure
 was born to solve.
 
-**Run it:** open the live link above, or open `index.html` in any browser. It
-opens on the course map; click a live module to open its own page.
+<sub>Working on the code locally? Clone the repo and open `index.html` in a
+browser. That's only for development, visitors never need it.</sub>
 
 ## Project layout
 
