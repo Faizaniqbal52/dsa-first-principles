@@ -17,10 +17,16 @@ was born to solve.
    the hardware works.
 4. **Watch it break**: every structure's weaknesses, shown not just stated.
 5. **Daily life**: where it hides in photos, video, Spotify, Instagram, AI.
-6. **Practice**: real engineering scenarios with Socratic hints that lead your
-   thinking instead of handing you the answer.
-7. **Reflection**: an understanding checklist; progress is measured by what you
+6. **Design practice**: real engineering scenarios with Socratic hints that lead
+   your thinking instead of handing you the answer.
+7. **Code it**: interview-style (LeetCode) problems, ramped easy to hard, each
+   taught with one repeatable thinking method rather than a memorized answer:
+   understand, brute force, find the waste, pseudo-code, then code and cost.
+8. **Reflection**: an understanding checklist; progress is measured by what you
    can explain, not how many problems you solved.
+
+Then the loop repeats on the next topic, and every new topic points back at the
+ones you already know, so the whole subject stays one connected story.
 
 ## The journey: 27 modules, 8 arcs
 

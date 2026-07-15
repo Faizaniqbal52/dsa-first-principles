@@ -336,8 +336,59 @@ hr.sep { border: none; border-top: 1px solid var(--line); margin: 48px auto; max
   border-radius: 8px; padding: 9px 16px; margin: 8px 0;
 }
 .unfold-btn:hover { filter: brightness(0.96); border-color: transparent; }
+.unfold-btn.done { color: var(--muted); background: var(--line); }
 .unfold { display: none; }
 .unfold.open { display: block; animation: fadeup 0.4s ease both; }
+
+/* ---------- the thinking method ---------- */
+.method-steps { counter-reset: ms; margin: 20px 0 6px; }
+.method-step {
+  display: flex; gap: 14px; align-items: flex-start; padding: 12px 0;
+  border-bottom: 1px dashed var(--line); font-family: var(--sans);
+}
+.method-step:last-child { border-bottom: none; }
+.method-step .num {
+  counter-increment: ms; flex-shrink: 0;
+  width: 28px; height: 28px; border-radius: 50%; background: var(--ink); color: var(--bg);
+  display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800;
+}
+.method-step .num::before { content: counter(ms); }
+.method-step .mt { font-size: 15px; }
+.method-step .mt b { display: block; font-size: 15px; margin-bottom: 1px; }
+.method-step .mt span { color: var(--muted); font-size: 14px; }
+
+/* ---------- LeetCode-style problem cards ---------- */
+.lc {
+  background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+  padding: 24px 26px; margin: 26px 0; font-family: var(--sans);
+}
+.lc-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+.lc-tag { font-size: 11px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 99px; padding: 3px 11px; }
+.lc-easy { background: var(--good-soft); color: var(--good); }
+.lc-med { background: var(--accent-soft); color: var(--accent); }
+.lc-hard { background: rgba(192,86,59,0.12); color: #C0563B; }
+.lc-src { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.lc-statement { font-family: var(--serif); font-size: 17px; line-height: 1.55; }
+.lc-statement code, .lc-step code { font-family: var(--mono); font-size: 0.85em; background: var(--accent-soft); padding: 1px 6px; border-radius: 5px; }
+.lc-eg { font-size: 15px; color: var(--muted); font-family: var(--sans); margin-top: 4px; }
+.lc-step { margin-top: 16px; }
+.lc-snum { font-size: 12px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
+.lc-body { font-family: var(--serif); font-size: 16px; line-height: 1.6; }
+.lc-body p { margin-bottom: 10px; }
+.lc-body p:last-child { margin-bottom: 0; }
+.codelabel { font-family: var(--sans); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 14px 0 2px; }
+pre .s { color: var(--good); }
+
+.probset { margin: 20px 0; }
+.probrow {
+  display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+  border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px;
+  font-family: var(--sans); font-size: 14.5px;
+}
+.probrow .lc-tag { flex-shrink: 0; }
+.probrow .pname { font-weight: 600; }
+.probrow .pnote { color: var(--muted); font-size: 13px; }
+.probrow .pnote b { color: var(--accent); font-weight: 600; }
 </style>
 
 <nav class="rail" aria-label="Course progress">
@@ -352,6 +403,7 @@ hr.sep { border: none; border-top: 1px solid var(--line); margin: 48px auto; max
       <a href="#breaks">Where it hurts</a>
       <a href="#real">Daily life</a>
       <a href="#problems">Practice</a>
+      <a href="#code">Code it</a>
       <a href="#plan">1-month plan</a>
     </div>
     <div class="rail-progress">
@@ -369,10 +421,10 @@ hr.sep { border: none; border-top: 1px solid var(--line); margin: 48px auto; max
     <div class="map-stats">
       <div class="map-stat"><div class="n" id="ms-live">1</div><div class="l">modules live</div></div>
       <div class="map-stat"><div class="n">27</div><div class="l">modules total</div></div>
-      <div class="map-stat"><div class="n" id="ms-checks">0/7</div><div class="l">your checkpoints in Module 0</div></div>
+      <div class="map-stat"><div class="n" id="ms-checks">0/9</div><div class="l">your checkpoints in Module 0</div></div>
     </div>
     <div class="method" style="max-width:660px;">
-      <strong>Every module is taught the same way:</strong> the story of why it was invented → look inside the machine → press "why?" as deep as you like → watch it break → where it hides in daily life → real engineering problems, last. Each new module is built at full depth <strong>when you arrive at it</strong>. Just tell Claude the module name and it appears here, on this same page.
+      <strong>Every module is taught the same way:</strong> the story of why it was invented → look inside the machine → press "why?" as deep as you like → watch it break → where it hides in daily life → design practice → then interview-style coding problems, each one taught with the same 5-step thinking method (understand → brute force → find the waste → pseudo-code → code and cost). Each new module is built at full depth <strong>when you arrive at it</strong>. Just tell Claude the module name and it appears here, on this same page.
     </div>
   </header>
   <div class="wide" id="arcs" style="padding-bottom:60px;"></div>
@@ -768,6 +820,171 @@ posts.append(new_post)
   </div>
 </section>
 
+<section class="wrap" id="code">
+  <div class="stepline"><span class="dot">8</span> Now code it <span class="rest">· interview-style problems</span></div>
+  <h2>Solve real problems, with a method that fits any problem</h2>
+  <p>The scenarios above taught you <em>when</em> to reach for an array. Now let's learn to <em>solve</em> array coding problems, the LeetCode kind that show up in interviews. We're not here to memorize answers. We're here to build one method you can point at any problem you've never seen before.</p>
+
+  <div class="aside-me"><div class="face">🧠</div><div class="txt"><b>Use this on every problem, forever</b>Same five steps, whether it's your first array problem or a hard graph one in month two. The steps never change. Only the problem does.</div></div>
+
+  <div class="method-steps">
+    <div class="method-step"><span class="num"></span><div class="mt"><b>Understand it</b><span>Say the problem back in your own words. What comes in, what goes out, and what edge cases exist (empty input? all zeros? one item?).</span></div></div>
+    <div class="method-step"><span class="num"></span><div class="mt"><b>Brute force first</b><span>Write the dumb, slow way that definitely works. Never skip this. A slow answer beats a blank page, and it shows you the shape of the problem.</span></div></div>
+    <div class="method-step"><span class="num"></span><div class="mt"><b>Find the waste</b><span>Look at your brute force. Where does it redo work it already did? That wasted work is almost always where the faster idea is hiding.</span></div></div>
+    <div class="method-step"><span class="num"></span><div class="mt"><b>Pseudo-code it</b><span>Write the steps in plain language, no syntax. If you can't say it in plain steps, you don't understand it yet. This part is the real thinking.</span></div></div>
+    <div class="method-step"><span class="num"></span><div class="mt"><b>Code it, then cost it</b><span>Turn the pseudo-code into real code. Then say its time and space cost out loud, in O() terms. Interviewers always ask.</span></div></div>
+  </div>
+
+  <p class="dim small">Try each problem yourself first. Open each step only after you've had a real go. That struggle is where the learning actually happens.</p>
+
+  <div class="lc">
+    <div class="lc-head"><span class="lc-tag lc-easy">Easy · warm-up</span><span class="lc-src">LeetCode 1480 · Running Sum of 1d Array</span></div>
+    <div class="lc-statement">
+      <p>Given a list of numbers, return a new list where position <code>i</code> holds the sum of every number from the start up to <code>i</code>.</p>
+      <p class="lc-eg">Example: <code>[1, 2, 3, 4]</code> becomes <code>[1, 3, 6, 10]</code> &nbsp;(1, then 1+2, then 1+2+3, then 1+2+3+4)</p>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 1 · Understand it</div>
+      <button class="unfold-btn">Say it back in plain words</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Input: a list of numbers. Output: a list of the same length, where each spot is the "total so far". One edge case to remember: an empty list should just give back an empty list.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 2 · Brute force first</div>
+      <button class="unfold-btn">The dumb slow way</button>
+      <div class="unfold"><div class="lc-body">
+        <p>For each position i, walk from the start and add up everything up to i. It works. But to fill position 9999, you re-add positions 0 through 9999 from scratch, and you do that for every single position.</p>
+        <div class="codelabel">Pseudo-code · brute force</div>
+        <pre>for i from 0 to last:
+    total = 0
+    for j from 0 to i:
+        total = total + nums[j]
+    out[i] = total</pre>
+        <p>A loop inside a loop, so the cost is O(n²). On a big list, that's painfully slow.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 3 · Find the waste</div>
+      <button class="unfold-btn">Where is it repeating work?</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Look at what the brute force throws away. To get the total at position i, it re-adds everything from 0 to i. But the total at position i is just <strong>the total at position i minus 1, plus one more number.</strong> We already had that total a moment ago, and we threw it away.</p>
+        <p>So carry a running total as you walk, and just add the current number to it. One pass, no re-adding.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 4 · Pseudo-code the good idea</div>
+      <button class="unfold-btn">Plain-language steps</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Pseudo-code · one pass</div>
+        <pre>running = 0
+for each number x in nums:
+    running = running + x
+    add running to the output list
+return output list</pre>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 5 · Code it, then cost it</div>
+      <button class="unfold-btn">Show the code and the cost</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Python</div>
+        <pre><span class="k">def</span> running_sum(nums):
+    total = 0
+    out = []
+    <span class="k">for</span> x <span class="k">in</span> nums:
+        total += x
+        out.append(total)
+    <span class="k">return</span> out</pre>
+        <p><strong>Time: O(n)</strong>, one clean pass. <strong>Space: O(n)</strong> for the output list (or O(1) extra if you're allowed to overwrite the input in place).</p>
+        <p style="color:var(--muted);font-size:15px;">Connects to: this "reuse the previous total" trick is the seed of <strong>prefix sums</strong>, a whole topic later in the course. You just met it early.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="lc">
+    <div class="lc-head"><span class="lc-tag lc-med">Easy → Medium</span><span class="lc-src">LeetCode 283 · Move Zeroes</span></div>
+    <div class="lc-statement">
+      <p>Move every <code>0</code> to the end of the list, while keeping the order of the non-zero numbers. Do it <strong>in place</strong>, without building a second list.</p>
+      <p class="lc-eg">Example: <code>[0, 1, 0, 3, 12]</code> becomes <code>[1, 3, 12, 0, 0]</code></p>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 1 · Understand it</div>
+      <button class="unfold-btn">Say it back in plain words</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Same list, rearranged: non-zeros stay in their original order, all the zeros get pushed to the back, and we're not allowed to make a new list. Edge cases: a list with no zeros (leave it alone), a list of all zeros, and an empty list.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 2 · Brute force first</div>
+      <button class="unfold-btn">The dumb slow way</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Make a new list. Walk the input and copy over every non-zero. Then add enough zeros at the end to fill it up. It works and it's easy to picture.</p>
+        <p>The catch: the problem said <strong>in place, no second list.</strong> So this passes the logic test but breaks the rules. Good. Now we know exactly what we have to beat.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 3 · Find the waste (and the trick)</div>
+      <button class="unfold-btn">What did you already see today?</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Remember the Spotify shuffle? You kept a wall between "done" and "not done", and the wall was just a number. Same idea here.</p>
+        <p>Keep a <strong>write</strong> pointer for where the next non-zero belongs. Walk a <strong>read</strong> pointer across the whole list. Every time read finds a non-zero, swap it to the write spot and push write forward one. When you're done, every non-zero sits packed at the front in order, and the zeros are automatically left at the back.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 4 · Pseudo-code the good idea</div>
+      <button class="unfold-btn">Plain-language steps</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Pseudo-code · two pointers</div>
+        <pre>write = 0
+for read from 0 to last:
+    if nums[read] is not 0:
+        swap nums[write] and nums[read]
+        write = write + 1</pre>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 5 · Code it, then cost it</div>
+      <button class="unfold-btn">Show the code and the cost</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Python</div>
+        <pre><span class="k">def</span> move_zeroes(nums):
+    write = 0
+    <span class="k">for</span> read <span class="k">in</span> range(len(nums)):
+        <span class="k">if</span> nums[read] != 0:
+            nums[write], nums[read] = nums[read], nums[write]
+            write += 1
+    <span class="k">return</span> nums</pre>
+        <p><strong>Time: O(n)</strong>, one pass. <strong>Space: O(1)</strong>, no second list, just two little pointers.</p>
+        <p style="color:var(--muted);font-size:15px;">Connects to: this "one wall, two pointers" pattern is a named Week 1 technique called <strong>two pointers</strong>. You've now seen it twice (Spotify, and here). That's not a coincidence. The same handful of patterns keep coming back.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="aside-me"><div class="face">🔁</div><div class="txt"><b>How the loop works from here</b>Same five steps on the next problem, and the next. Below is your array problem set, easy first. Solve each with the method, then in about a week come back and re-solve the ones that felt hard. That repeat is what turns "I understood it" into "I can do it under pressure".</div></div>
+
+  <h3 style="margin-top:30px;font-family:var(--sans);">Your array problem set · easy first</h3>
+  <p class="dim small">Do them in order. A few need an idea from a later topic to solve <em>fast</em>, and that's on purpose: it shows you exactly why the next topics exist.</p>
+  <div class="probset">
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">Best Time to Buy and Sell Stock</span> <span class="pnote">One pass, track the cheapest price so far. <b>Connects to:</b> "remember as you go".</span></div>
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">Contains Duplicate</span> <span class="pnote">Brute force is O(n²). Doing it fast needs a set. <b>Foreshadows:</b> hash maps, Arc 1.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Maximum Subarray (Kadane)</span> <span class="pnote">Carry a running best. <b>Connects to:</b> the running-total idea you just used.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Two Sum</span> <span class="pnote">Brute force is easy; the fast version needs a lookup trick. <b>Foreshadows:</b> hash maps.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Product of Array Except Self</span> <span class="pnote">Prefix and suffix products. <b>Connects to:</b> prefix sums, Arc 3.</span></div>
+  </div>
+  <p class="dim small">Solve the two easy ones with the five steps before you touch the mediums. Don't jump to the hardest problem first, and don't stay vague: always end at real code and a stated O() cost.</p>
+</section>
+
 <hr class="sep">
 
 <section class="wrap" id="understanding">
@@ -782,6 +999,8 @@ posts.append(new_post)
     <label><input type="checkbox" data-key="cache"><span>I can explain <strong>the cache gift</strong>, reading one value photocopies the whole shelf, so array loops fly</span></label>
     <label><input type="checkbox" data-key="notuse"><span>I know <strong>when NOT to use an array</strong>, when the middle keeps changing and I rarely jump to positions</span></label>
     <label><input type="checkbox" data-key="scenarios"><span>I thought through <strong>all three practice situations</strong> before opening the discussions</span></label>
+    <label><input type="checkbox" data-key="method"><span>I can run the <strong>5-step method</strong> on a new problem: understand, brute force, find the waste, pseudo-code, then code and cost</span></label>
+    <label><input type="checkbox" data-key="pseudo"><span>I can <strong>write pseudo-code before real code</strong>, and I solved both coding problems myself before opening the steps</span></label>
   </div>
   <p id="check-msg" class="small dim"></p>
 </section>
@@ -1085,6 +1304,19 @@ posts.append(new_post)
     });
   });
 
+  /* ---------- unfold panels (reveal-as-you-go) ---------- */
+  document.querySelectorAll('.unfold-btn').forEach(function (b) {
+    b.setAttribute('aria-expanded', 'false');
+    b.addEventListener('click', function () {
+      var panel = b.nextElementSibling;
+      if (panel && panel.classList.contains('unfold')) {
+        var isOpen = panel.classList.toggle('open');
+        b.classList.toggle('done', isOpen);
+        b.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      }
+    });
+  });
+
   /* ---------- check-your-understanding (no scores, just feedback) ---------- */
   document.querySelectorAll('.cp').forEach(function (cp) {
     var answer = cp.dataset.answer;
@@ -1133,8 +1365,8 @@ posts.append(new_post)
     $('progress-fill').style.width = pct + '%';
     $('progress-num').textContent = pct + '%';
     $('check-msg').textContent =
-      done === boxes.length ? 'All seven. You now understand arrays more deeply than most people who have solved 200 problems. When you\'re ready, tell Claude: "Module 2, linked lists."' :
-      done >= 4 ? 'More than halfway, the remaining lines are the ones interviews actually test.' : '';
+      done === boxes.length ? 'All done. You now understand arrays more deeply than most people who have solved 200 problems, and you have a method for the problems too. When you\'re ready, tell Claude: "Module 2, linked lists."' :
+      done >= boxes.length / 2 ? 'More than halfway. The remaining lines are the ones interviews actually test.' : '';
   }
   boxes.forEach(function (b) {
     b.addEventListener('change', function () { saveChecks(); updateProgress(); });
@@ -1211,7 +1443,7 @@ posts.append(new_post)
   function updateMapStats() {
     var done = 0;
     boxes.forEach(function (b) { if (b.checked) done++; });
-    $('ms-checks').textContent = done + '/7';
+    $('ms-checks').textContent = done + '/' + boxes.length;
   }
 
   function showView(which) {
