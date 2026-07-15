@@ -493,14 +493,16 @@ return output list</pre>
       <div class="lc-snum">Step 5 · Code it, then cost it</div>
       <button class="unfold-btn">Show the code and the cost</button>
       <div class="unfold"><div class="lc-body">
-        <div class="codelabel">Python</div>
-        <pre><span class="k">def</span> running_sum(nums):
-    total = 0
-    out = []
-    <span class="k">for</span> x <span class="k">in</span> nums:
-        total += x
-        out.append(total)
-    <span class="k">return</span> out</pre>
+        <div class="codelabel">C++</div>
+        <pre><span class="k">vector</span>&lt;<span class="k">int</span>&gt; runningSum(<span class="k">vector</span>&lt;<span class="k">int</span>&gt;&amp; nums) {
+    <span class="k">int</span> total = 0;
+    <span class="k">vector</span>&lt;<span class="k">int</span>&gt; out;
+    <span class="k">for</span> (<span class="k">int</span> x : nums) {
+        total += x;
+        out.push_back(total);
+    }
+    <span class="k">return</span> out;
+}</pre>
         <p><strong>Time: O(n)</strong>, one clean pass. <strong>Space: O(n)</strong> for the output list (or O(1) extra if you're allowed to overwrite the input in place).</p>
         <p style="color:var(--muted);font-size:15px;">Connects to: this "reuse the previous total" trick is the seed of <strong>prefix sums</strong>, a whole topic later in the course. You just met it early.</p>
       </div></div>
@@ -557,14 +559,16 @@ for read from 0 to last:
       <div class="lc-snum">Step 5 · Code it, then cost it</div>
       <button class="unfold-btn">Show the code and the cost</button>
       <div class="unfold"><div class="lc-body">
-        <div class="codelabel">Python</div>
-        <pre><span class="k">def</span> move_zeroes(nums):
-    write = 0
-    <span class="k">for</span> read <span class="k">in</span> range(len(nums)):
-        <span class="k">if</span> nums[read] != 0:
-            nums[write], nums[read] = nums[read], nums[write]
-            write += 1
-    <span class="k">return</span> nums</pre>
+        <div class="codelabel">C++</div>
+        <pre><span class="k">void</span> moveZeroes(<span class="k">vector</span>&lt;<span class="k">int</span>&gt;&amp; nums) {
+    <span class="k">int</span> write = 0;
+    <span class="k">for</span> (<span class="k">int</span> read = 0; read &lt; nums.size(); read++) {
+        <span class="k">if</span> (nums[read] != 0) {
+            swap(nums[write], nums[read]);
+            write++;
+        }
+    }
+}</pre>
         <p><strong>Time: O(n)</strong>, one pass. <strong>Space: O(1)</strong>, no second list, just two little pointers.</p>
         <p style="color:var(--muted);font-size:15px;">Connects to: this "one wall, two pointers" pattern is a named Week 1 technique called <strong>two pointers</strong>. You've now seen it twice (Spotify, and here). That's not a coincidence. The same handful of patterns keep coming back.</p>
       </div></div>
