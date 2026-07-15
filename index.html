@@ -293,6 +293,51 @@ hr.sep { border: none; border-top: 1px solid var(--line); margin: 48px auto; max
 }
 .locker .tag { display: block; font-family: var(--sans); font-size: 10px; color: var(--machine-dim); margin-top: 6px; }
 .locker.lit { background: #3A2A14; border-color: var(--amber); color: var(--amber-bright); }
+
+/* ---------- guided-step markers ---------- */
+.stepline {
+  display: flex; align-items: center; gap: 10px; font-family: var(--sans);
+  font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 10px;
+}
+.stepline .dot { width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; letter-spacing: 0; }
+.stepline .rest { color: var(--faint); font-weight: 600; }
+
+/* ---------- check-your-understanding ---------- */
+.cp {
+  background: var(--card); border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  border-radius: 12px; padding: 20px 22px; margin: 26px 0; font-family: var(--sans);
+}
+.cp-tag { font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+.cp-q { font-size: 16.5px; line-height: 1.5; color: var(--ink); margin-bottom: 14px; font-family: var(--serif); }
+.cp-opts { display: flex; flex-direction: column; gap: 9px; }
+.cp-opts button { width: 100%; transition: background 0.2s, border-color 0.2s; }
+.cp-opts button.right { border-color: var(--good); background: var(--good-soft); color: var(--ink); font-weight: 600; }
+.cp-opts button.nope { border-color: #C0563B; background: rgba(192,86,59,0.09); }
+.cp-fb { display: none; margin-top: 14px; font-size: 15.5px; line-height: 1.55; padding-left: 14px; border-left: 3px solid var(--good); font-family: var(--serif); }
+.cp-fb.show { display: block; animation: fadeup 0.35s ease both; }
+.cp-fb b { font-family: var(--sans); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--good); display: block; margin-bottom: 3px; }
+.cp-nudge { display: none; margin-top: 12px; font-size: 14.5px; color: var(--muted); font-family: var(--sans); }
+.cp-nudge.show { display: block; }
+
+/* ---------- friendly aside ---------- */
+.aside-me {
+  display: flex; gap: 12px; align-items: flex-start; margin: 20px 0;
+  background: var(--good-soft); border-radius: 12px; padding: 14px 16px;
+}
+.aside-me .face { font-size: 22px; line-height: 1.2; flex-shrink: 0; }
+.aside-me .txt { font-size: 15.5px; line-height: 1.55; }
+.aside-me .txt b { font-family: var(--sans); font-size: 12px; letter-spacing: 0.04em; text-transform: uppercase; color: var(--good); display: block; margin-bottom: 2px; }
+
+/* ---------- unfold (reveal-as-you-go) ---------- */
+.unfold-btn {
+  font-family: var(--sans); font-size: 14.5px; font-weight: 600;
+  color: var(--accent); background: var(--accent-soft); border: 1px solid transparent;
+  border-radius: 8px; padding: 9px 16px; margin: 8px 0;
+}
+.unfold-btn:hover { filter: brightness(0.96); border-color: transparent; }
+.unfold { display: none; }
+.unfold.open { display: block; animation: fadeup 0.4s ease both; }
 </style>
 
 <nav class="rail" aria-label="Course progress">
@@ -320,14 +365,14 @@ hr.sep { border: none; border-top: 1px solid var(--line); margin: 48px auto; max
   <header class="hero wide">
     <div class="eyebrow">The whole journey · zero to advanced</div>
     <h1>Every module, from "what is memory?" to the final floor</h1>
-    <p class="big" style="max-width:660px;">27 modules in 8 arcs. Each one exists because the one before it breaks somewhere — DSA is one connected story, not 27 separate topics.</p>
+    <p class="big" style="max-width:660px;">27 modules in 8 arcs. Each one exists because the one before it breaks somewhere. DSA isn't 27 separate topics. It's one connected story.</p>
     <div class="map-stats">
       <div class="map-stat"><div class="n" id="ms-live">1</div><div class="l">modules live</div></div>
       <div class="map-stat"><div class="n">27</div><div class="l">modules total</div></div>
       <div class="map-stat"><div class="n" id="ms-checks">0/7</div><div class="l">your checkpoints in Module 0</div></div>
     </div>
     <div class="method" style="max-width:660px;">
-      <strong>Every module is taught the same way:</strong> the story of why it was invented → look inside the machine → press "why?" as deep as you like → watch it break → where it hides in daily life → real engineering problems, last. Each new module is built at full depth <strong>when you arrive at it</strong> — tell Claude the module name and it appears here, on this same page.
+      <strong>Every module is taught the same way:</strong> the story of why it was invented → look inside the machine → press "why?" as deep as you like → watch it break → where it hides in daily life → real engineering problems, last. Each new module is built at full depth <strong>when you arrive at it</strong>. Just tell Claude the module name and it appears here, on this same page.
     </div>
   </header>
   <div class="wide" id="arcs" style="padding-bottom:60px;"></div>
@@ -335,20 +380,22 @@ hr.sep { border: none; border-top: 1px solid var(--line); margin: 48px auto; max
 
 <div id="view-m0">
 <header class="hero wrap" id="start">
-  <div class="eyebrow">Module 0 · Step 1 · Start from zero</div>
+  <div class="stepline"><span class="dot">1</span> Start from zero <span class="rest">· Module 0</span></div>
   <h1>How a computer remembers things</h1>
-  <p class="big">Before we touch anything called "DSA", you need three small ideas. That's all. Each one is something you already understand from daily life.</p>
+  <p class="big">Before we touch anything called "DSA", you need three small ideas. Each one is something you already know from real life.</p>
+
+  <div class="aside-me"><div class="face">👋</div><div class="txt"><b>Quick hello</b>No jargon, I promise. I'll explain each idea in plain words, then you try it yourself before we move on. Take it slow.</div></div>
 
   <div class="word"><b>Idea 1 · A program</b>
-  A program is just a list of instructions, written in order, that the computer follows one by one. Like a recipe. Nothing more.</div>
+  A program is just a list of steps, in order, that the computer does one by one. Think of a recipe. That's really all it is.</div>
 
   <div class="word"><b>Idea 2 · Memory</b>
-  A computer's memory is like a school corridor with millions of small lockers. Every locker has a number painted on it. Each locker can hold one small thing — like one number.</div>
+  A computer's memory is like a long hallway full of tiny lockers. Every locker has a number on it. Each one holds one small thing, like a single number.</div>
 
   <div class="word"><b>Idea 3 · A variable</b>
-  A variable is one locker that you put a name sticker on. Instead of remembering "locker number 7,204,158", you just say <code>age</code>, and the computer finds that locker for you.</div>
+  A variable is one locker with a name sticker on it. Instead of saying "locker number 7,204,158", you just say <code>age</code>, and the computer finds it for you.</div>
 
-  <p>Try it. This is a real working variable:</p>
+  <p>Let's try one. This is a real, working variable:</p>
   <div class="machine">
     <div class="label">Your first variable · try it yourself</div>
     <div class="mrow">
@@ -361,29 +408,42 @@ hr.sep { border: none; border-top: 1px solid var(--line); margin: 48px auto; max
     <div class="mnote" id="age-note">The computer will store your number in one locker and stick the name "age" on it.</div>
   </div>
 
-  <p>That's it. You now know what a variable is: <strong>one named locker holding one value.</strong></p>
-  <p class="dim small">One locker, one name, one value. Remember that — because now we're going to break it.</p>
-  <p style="margin-top:10px;"><a href="#story" style="color:var(--accent);font-family:var(--sans);font-size:15px;">Ready? Scroll to the story ↓</a></p>
+  <p>That's the whole idea. A variable is <strong>one named locker holding one value.</strong></p>
+  <p class="dim small">One locker. One name. One value. Hold onto that, because next we're going to break it.</p>
+
+  <div class="cp" data-cp="cp0" data-answer="b">
+    <div class="cp-tag">Quick check · no pressure</div>
+    <div class="cp-q">So, in your own words: what is a variable?</div>
+    <div class="cp-opts">
+      <button data-opt="a">A box that can hold thousands of numbers at once</button>
+      <button data-opt="b">One locker in memory, with a name sticker, holding one value</button>
+      <button data-opt="c">A step in the recipe the computer runs</button>
+    </div>
+    <div class="cp-fb"><b>Exactly</b>One named locker, one value inside. Simple, and it's about to become the whole point.</div>
+    <div class="cp-nudge">Close, but not quite. Scroll up and look at Idea 3 again, then pick another answer.</div>
+  </div>
+
+  <p style="margin-top:10px;"><a href="#story" style="color:var(--accent);font-family:var(--sans);font-size:15px;">Ready? Here comes the story ↓</a></p>
 </header>
 
 <section class="wrap" id="story">
-  <div class="eyebrow">Step 2 · The story</div>
-  <h2>The day one-locker-one-name stopped working</h2>
-  <p>It's around 1955. Computers are new. The only tool programmers have is the variable — the named locker you just used.</p>
-  <p class="big">Your school gives you a job: <strong>store the exam marks of 10,000 students.</strong></p>
-  <p class="dim small">You only know variables. What would you do? Pick whatever feels natural — there is no wrong answer.</p>
+  <div class="stepline"><span class="dot">2</span> The story <span class="rest">· why arrays got invented</span></div>
+  <h2>The day one locker, one name stopped working</h2>
+  <p>Picture the year 1955. Computers are brand new. The only tool you have is the variable, that named locker you just tried.</p>
+  <p class="big">Now your school hands you a job: <strong>store the exam marks of 10,000 students.</strong></p>
+  <p class="dim small">You only know variables. What would you do? Pick whatever feels natural. There's no wrong answer here.</p>
 
   <div class="chips" id="ch0-choices">
-    <button data-choice="a">Easy — I'll make 10,000 variables: <code>marks1</code>, <code>marks2</code>, <code>marks3</code>…</button>
+    <button data-choice="a">Easy, I'll make 10,000 variables: <code>marks1</code>, <code>marks2</code>, <code>marks3</code>…</button>
     <button data-choice="b">Squeeze all 10,000 marks into one variable somehow</button>
     <button data-choice="c">Honestly, I have no idea</button>
   </div>
 
   <div class="reveal" id="ch0-r-a">
-    <div class="response"><span class="who">Good thinking</span>That's exactly what people tried. It's the only tool you have, so use it. Here's what your program looks like:</div>
+    <div class="response"><span class="who">Good thinking</span>That's exactly what people tried. It's the only tool you have, so you use it. Here's what your program starts to look like:</div>
   </div>
   <div class="reveal" id="ch0-r-b">
-    <div class="response"><span class="who">Nice try</span>People really attempted tricks like this. But one locker holds one small value — 10,000 marks won't fit. So everyone fell back to the obvious plan: lots of variables. Look what that becomes:</div>
+    <div class="response"><span class="who">Nice try</span>People really did attempt tricks like this. But one locker holds one small value, and 10,000 marks won't fit. So everyone fell back to the obvious plan: lots of variables. Watch what that turns into:</div>
   </div>
   <div class="reveal" id="ch0-r-c">
     <div class="response"><span class="who">Honest answer</span>That was everyone's answer in 1955 too. The only tool was variables, so let's try the obvious plan together:</div>
@@ -394,40 +454,40 @@ hr.sep { border: none; border-top: 1px solid var(--line); margin: 48px auto; max
       <div class="label">Your program · 10,000 variables</div>
       <div class="varlist" id="varlist"></div>
     </div>
-    <p>Ugly, but it works… as long as you always know <em>which</em> variable you want while writing the program.</p>
-    <p class="big">Then a teacher walks up to your computer and types a number: <strong>8437</strong>. She wants the 8,437th student's mark. Right now.</p>
-    <p class="dim small">Important: you wrote the program yesterday. The number 8437 arrived today, from the teacher's keyboard. Tomorrow she might type 212. Your program must handle <em>any</em> number. How do you print that student's mark?</p>
+    <p>Ugly, but it works. At least, it works as long as you already know <em>which</em> variable you want while writing the program.</p>
+    <p class="big">Then a teacher walks up and types a number: <strong>8437</strong>. She wants the 8,437th student's mark. Right now.</p>
+    <p class="dim small">Here's the catch. You wrote the program yesterday. The number 8437 arrived today, from the teacher's keyboard. Tomorrow she might type 212. Your program has to handle <em>any</em> number. So how do you print that one student's mark?</p>
     <div class="chips" id="print-choices">
       <button data-attempt="a">Simple: <code>print(marks8437)</code></button>
       <button data-attempt="b">Glue the name together: <code>print("marks" + n)</code></button>
       <button data-attempt="c">Write 10,000 if-lines: if n is 1 print marks1, if n is 2 print marks2…</button>
     </div>
     <div class="reveal" id="print-r-a">
-      <div class="response"><span class="who">The wall</span>That only works because <em>you</em> typed 8437 into the code yourself. But the teacher types the number <em>after</em> the program is already written and running. Tomorrow she types 212 — and your code still says <code>marks8437</code>. A program can't rewrite itself for every new request.</div>
+      <div class="response"><span class="who">The wall</span>That only works because <em>you</em> typed 8437 into the code yourself. But the teacher types her number <em>after</em> the program is written and running. Tomorrow she types 212, and your code still says <code>marks8437</code>. A program can't rewrite itself for every new request.</div>
     </div>
     <div class="reveal" id="print-r-b">
-      <div class="response"><span class="who">The wall</span>Brilliant instinct — and this is the thing programming languages simply don't allow. <code>"marks" + n</code> makes a piece of <em>text</em>, like writing "marks8437" on paper. A name sticker and a piece of paper that <em>looks like</em> a name sticker are not the same thing. The computer can't find a locker using text you invented while running.</div>
+      <div class="response"><span class="who">The wall</span>Great instinct. Sadly, this is the one thing programming languages just won't allow. <code>"marks" + n</code> makes a piece of <em>text</em>, like writing "marks8437" on paper. A name sticker and a piece of paper that <em>looks like</em> a name sticker are not the same thing. The computer can't open a locker using text you made up while running.</div>
     </div>
     <div class="reveal" id="print-r-c">
-      <div class="response"><span class="who">The wall</span>Painfully honest — and people basically did this! But now your program is 10,000 lines of "if". Next year there are 40,000 students. You'd spend your life copy-pasting if-lines. There has to be a better way.</div>
+      <div class="response"><span class="who">The wall</span>Painfully honest, and people basically did do this. But now your program is 10,000 lines of "if". Next year there are 40,000 students. You'd spend your whole life copy-pasting if-lines. There has to be a better way.</div>
     </div>
     <div class="reveal" id="ch0-wall">
       <p class="big" style="margin-top:22px;">Feel the wall? You have 10,000 values, and no way to say <em>"give me student number n."</em></p>
-      <p>All three plans failed for the same deep reason: <strong>a variable's name is not a number.</strong> You can't do maths with a name. But the teacher gave you a <em>number</em>. What you need is a container where the number itself finds the value.</p>
-      <button class="primary" id="ch0-continue">Show me what humans invented →</button>
+      <p>All three plans failed for the same reason: <strong>a variable's name is not a number.</strong> You can't do maths with a name. But the teacher gave you a <em>number</em>. What you really need is a container where the number itself finds the value.</p>
+      <button class="primary" id="ch0-continue">Show me what people invented →</button>
     </div>
   </div>
-  <p style="margin-top:26px;"><button class="skip" id="skip-story">I've read the story before — skip ahead</button></p>
+  <p style="margin-top:26px;"><button class="skip" id="skip-story">I've read the story before, skip ahead</button></p>
 </section>
 
 <div class="reveal" id="rest">
 
 <section class="wrap" id="invention">
-  <div class="eyebrow">Step 3 · The invention</div>
+  <div class="stepline"><span class="dot">3</span> The fix <span class="rest">· meet the array</span></div>
   <h2>The array: let the number be the name</h2>
-  <p>Here's the invention, and it's beautifully simple.</p>
-  <p>Instead of 10,000 lockers scattered all over the corridor with 10,000 name stickers, you go to the school office and say: <strong>"Give me 10,000 lockers in one straight row, side by side, no gaps."</strong></p>
-  <p>Say your row starts at locker number 5000. Then:</p>
+  <p>The fix is beautifully simple.</p>
+  <p>Instead of 10,000 lockers scattered all over the hallway with 10,000 name stickers, you go to the office and ask for one thing: <strong>"Give me 10,000 lockers in a single straight row, side by side, no gaps."</strong></p>
+  <p>Say your row starts at locker number 5000. Now watch:</p>
   <div class="machine">
     <div class="label">The whole trick</div>
     <div class="formula">student 1's mark → locker 5000<br>
@@ -435,43 +495,57 @@ student 2's mark → locker 5001<br>
 student 3's mark → locker 5002<br>
 …<br>
 student <b>n</b>'s mark → locker <b>5000 + n − 1</b></div>
-    <div class="mnote">The teacher types 8437 → the computer calculates 5000 + 8436 = <b>locker 13436</b> → opens exactly that locker. One small sum. Done.</div>
+    <div class="mnote">The teacher types 8437. The computer works out 5000 + 8436 = <b>locker 13436</b>, then opens exactly that locker. One small sum, and you're done.</div>
   </div>
-  <p>No name stickers. No searching. The <strong>position</strong> of a student became the way to find them. That container — a row of lockers side by side, found by position — is called an <strong>array</strong>.</p>
+  <p>No name stickers. No searching. The <strong>position</strong> of a student is now the way to find them. This container, a row of lockers side by side that you find by position, is called an <strong>array</strong>.</p>
   <div class="word"><b>New word · Array</b>
-  A row of memory lockers, side by side, holding values of the same kind. You get any value instantly by giving its position number.</div>
-  <div class="response"><span class="who">A little history</span>This wasn't invented in a classroom. In the 1950s, programmers were doing this locker maths <em>by hand</em>, and it was slow and painful. In 1957 a language called Fortran finally said: "just write <code>marks(8437)</code> and I'll do the maths for you." That was the moment the array became part of programming. It was born from real pain, not theory.</div>
+  A row of memory lockers, side by side, holding values of the same kind. Give it a position number and it hands you that value instantly.</div>
+
+  <div class="cp" data-cp="cp1" data-answer="c">
+    <div class="cp-tag">Quick check</div>
+    <div class="cp-q">Your row starts at locker 5000. Which locker holds the 2nd student's mark?</div>
+    <div class="cp-opts">
+      <button data-opt="a">Locker 5002</button>
+      <button data-opt="b">Locker 2</button>
+      <button data-opt="c">Locker 5001</button>
+    </div>
+    <div class="cp-fb"><b>Nice</b>Student 1 sits at 5000, so student 2 is the very next locker, 5001. The number does the finding for you. No searching.</div>
+    <div class="cp-nudge">Not quite. Student 1 is at the start (5000), and each next student is one locker along. Try again.</div>
+  </div>
+
+  <div class="aside-me"><div class="face">📜</div><div class="txt"><b>A little history</b>Nobody invented this in a classroom. In the 1950s, programmers did this locker maths <em>by hand</em>, and it was slow and painful. Then in 1957 a language called Fortran said: "just write <code>marks(8437)</code> and I'll do the maths for you." That's the moment the array became part of programming. Real pain, not theory.</div></div>
+
   <div class="word"><b>New word · Index</b>
-  The position number you use to open an array's locker. One catch: computers count positions starting from 0, not 1. So the first mark is <code>marks[0]</code> and the 8,437th mark is <code>marks[8436]</code>. Why start at 0? Because the index is really "how many steps from the start" — and the first locker is 0 steps away.</div>
+  The index is the position number you use to open an array's locker. One catch: computers count from 0, not 1. So the first mark is <code>marks[0]</code>, and the 8,437th mark is <code>marks[8436]</code>. Why start at 0? Because the index really means "how many steps from the start", and the first locker is 0 steps away.</div>
 </section>
 
 <section class="wide" id="inside">
   <div class="wrap" style="padding:0;">
-    <div class="eyebrow">Step 4 · Look inside the machine</div>
-    <h2>See the maths happen</h2>
-    <p>Below is the row of 10,000 marks, starting at locker 5000. Type any position and watch the computer find it two different ways: the old painful way (walk locker by locker) and the array way (calculate and jump).</p>
+    <div class="stepline"><span class="dot">4</span> Look inside <span class="rest">· see the maths happen</span></div>
+    <h2>Watch the two ways, side by side</h2>
+    <p>Here's the row of 10,000 marks, starting at locker 5000. Type any position and watch the computer find it two ways: the slow old way (walk locker by locker) and the array way (calculate, then jump straight there).</p>
   </div>
 
   <div class="machine">
     <div class="label">Memory · 10,000 marks in a row · starts at locker 5000</div>
     <div class="cells-outer"><div class="cells" id="ram-cells"></div></div>
-    <div class="formula" id="ram-formula">5000 + <b>8436</b> = locker <b>13436</b> — calculated, not searched.</div>
+    <div class="formula" id="ram-formula">5000 + <b>8436</b> = locker <b>13436</b>, calculated, not searched.</div>
     <div class="mrow">
       <label for="idx-input" style="font-size:13px;color:var(--machine-dim);">position (0 to 9999):</label>
       <input type="number" id="idx-input" min="0" max="9999" value="8436" step="1">
-      <button id="btn-compute">Jump — the array way</button>
-      <button id="btn-walk">Walk — the old way</button>
+      <button id="btn-compute">Jump, the array way</button>
+      <button id="btn-walk">Walk, the old way</button>
     </div>
     <div class="race">
       <div>
         <div class="rhead">Walking (no array)</div>
-        <div class="rnum counter" id="walk-count">—</div>
+        <div class="rnum counter" id="walk-count">·</div>
         <div class="rsub" id="walk-sub">open every locker door until you reach it</div>
       </div>
       <div>
         <div class="rhead">Jumping (array)</div>
-        <div class="rnum" id="calc-count">—</div>
-        <div class="rsub" id="calc-sub">one addition — always, for any position</div>
+        <div class="rnum" id="calc-count">·</div>
+        <div class="rsub" id="calc-sub">one addition, always, for any position</div>
       </div>
     </div>
     <div class="mnote">Try position 3, then position 9999. <b>Jumping takes the same tiny effort every time, no matter how far.</b> Walking gets worse the further you go.</div>
@@ -479,30 +553,42 @@ student <b>n</b>'s mark → locker <b>5000 + n − 1</b></div>
 
   <div class="wrap" style="padding:0;">
     <div class="word"><b>New words · O(1) and O(n)</b>
-    Programmers have nicknames for what you just saw. "Same effort no matter how big" is called <strong>O(1)</strong> (say: "oh-one"). "Effort grows as the data grows" is called <strong>O(n)</strong> (say: "oh-en" — n means the number of items). That's all these scary symbols mean. Array jump = O(1). Walking = O(n). You now read your first complexity notation.</div>
+    Programmers have nicknames for what you just saw. "Same effort no matter how big" is called <strong>O(1)</strong> (say it "oh-one"). "Effort grows as the data grows" is called <strong>O(n)</strong> (say it "oh-en", where n is the number of items). That's all these scary symbols mean. Array jump is O(1). Walking is O(n). You just read your first complexity notation.</div>
 
-    <h3 style="margin-top:34px;">A free gift: neighbours come along</h3>
-    <p>One more real thing, made simple. Main memory is far from the computer's brain, like lockers in another building. So when the computer fetches one locker, it photocopies <em>the whole shelf</em> — about 16 lockers — onto a small desk right next to its brain. That desk is called the <strong>cache</strong> (say: "cash"). Click any locker below:</p>
+    <div class="cp" data-cp="cp2" data-answer="a">
+      <div class="cp-tag">Quick check</div>
+      <div class="cp-q">Jumping to <code>arr[9999]</code> vs jumping to <code>arr[3]</code>. How does the effort compare?</div>
+      <div class="cp-opts">
+        <button data-opt="a">Same tiny effort for both. That's O(1)</button>
+        <button data-opt="b">arr[9999] is much slower, it's further away</button>
+        <button data-opt="c">It depends on the computer's mood</button>
+      </div>
+      <div class="cp-fb"><b>You've got it</b>The array does one addition either way, then jumps straight there. Near or far, same cost. That's the whole magic of O(1).</div>
+      <div class="cp-nudge">Have another go. Remember, the array never walks. It calculates one sum and jumps, no matter how far.</div>
+    </div>
+
+    <h3 style="margin-top:34px;">A free gift: the neighbours come along</h3>
+    <p>One more real thing, kept simple. Main memory sits far from the computer's brain, like lockers in another building. So when the computer grabs one locker, it photocopies <em>the whole shelf</em> (about 16 lockers) onto a small desk right next to its brain. That desk is called the <strong>cache</strong> (say it "cash"). Click any locker below:</p>
   </div>
   <div class="machine">
     <div class="label">One shelf of 16 marks · click any locker to read it</div>
     <div class="cells-outer"><div class="cells" id="cache-cells"></div></div>
-    <div class="mnote" id="cache-note">Read one mark, and the 15 next to it land on the desk for free. So a loop reading an array flies — the next value is almost always already on the desk.</div>
+    <div class="mnote" id="cache-note">Read one mark, and the 15 next to it land on the desk for free. So a loop reading an array flies, the next value is almost always already on the desk.</div>
   </div>
   <div class="wrap" style="padding:0;">
-    <p>This only works because array values are <em>neighbours</em>. If your 10,000 values were scattered all over the building, every single read would be another long trip. Keep this in your pocket — it becomes very important when we meet linked lists.</p>
+    <p>This only works because array values are <em>neighbours</em>. If your 10,000 values were scattered all over the building, every single read would be another long trip. Keep this in your pocket. It matters a lot when we meet linked lists.</p>
   </div>
 </section>
 
 <section class="wrap" id="whys">
-  <div class="eyebrow">Optional depth · press "why?" as many times as you like</div>
+  <div class="stepline"><span class="dot">✦</span> Bonus <span class="rest">· go deeper, totally optional</span></div>
   <h2>Still curious? Keep asking why</h2>
-  <p class="dim small">Every line below is true. Press <em>why?</em> to open the reason. Some reasons have their own <em>why?</em> inside. Go as deep as you feel like — each level is written just as simply. If you keep pressing, you'll quietly end up learning how the machine itself is built.</p>
+  <p class="dim small">Every line below is true. Press <em>why?</em> to open the reason. Some reasons have their own <em>why?</em> hiding inside. Go as deep as you feel like. Each level is written just as simply. Keep pressing and you'll quietly end up learning how the machine itself is built. Feel free to skip this and come back later.</p>
 
   <div class="claim">
     <div class="head">The lockers must be side by side, with no gaps.<button class="why-btn">why?</button></div>
     <div class="why-panel">
-      <p>The magic sum "5000 + position" only works if every locker is exactly one step from the previous one. If locker 3 could be anywhere in the building, no sum could find it — you'd need a notebook listing where each one went.</p>
+      <p>The magic sum "5000 + position" only works if every locker is exactly one step from the previous one. If locker 3 could be anywhere in the building, no sum could find it, you'd need a notebook listing where each one went.</p>
       <div class="head small">So why not just keep that notebook?<button class="why-btn">why?</button></div>
       <div class="why-panel">
         <p>Think about what the notebook is: a numbered list where you need to jump to entry n instantly… that's an array again! The escape plan turns out to be the same thing you were escaping. So "side by side" is where the chain stops.</p>
@@ -516,8 +602,8 @@ student <b>n</b>'s mark → locker <b>5000 + n − 1</b></div>
       <p>Because memory is not a corridor you walk through. It's more like a telephone system: give the number, and the wiring connects you straight to that one locker. Locker 14,999 answers as fast as locker 5,000.</p>
       <div class="head small">Why is memory wired like a telephone system?<button class="why-btn">why?</button></div>
       <div class="why-panel">
-        <p>Inside the memory chip there's a circuit called an address decoder. It takes the locker number and electrically switches on exactly that one row — like dialling a number rings exactly one phone. No walking exists at the hardware level at all. This is why it's called RAM: Random Access Memory — "random" meaning ANY locker, equally fast.</p>
-        <p class="dim small">Congratulations — you just crossed into computer architecture without noticing. This is the bottom floor.</p>
+        <p>Inside the memory chip there's a circuit called an address decoder. It takes the locker number and electrically switches on exactly that one row, the way dialling a number rings exactly one phone. No walking exists at the hardware level at all. This is why it's called RAM, short for Random Access Memory, where "random" just means ANY locker, equally fast.</p>
+        <p class="dim small">Nice. You just crossed into computer architecture without even noticing. This is the bottom floor.</p>
       </div>
     </div>
   </div>
@@ -525,7 +611,7 @@ student <b>n</b>'s mark → locker <b>5000 + n − 1</b></div>
   <div class="claim">
     <div class="head">An array can't simply grow bigger when it's full.<button class="why-btn">why?</button></div>
     <div class="why-panel">
-      <p>Your row got lockers 5000–14999. Locker 15000 may already belong to another program's data. You can't grab your neighbour's locker just because you need more space.</p>
+      <p>Your row got lockers 5000 to 14999. Locker 15000 might already belong to another program's data. You can't grab your neighbour's locker just because you need more space.</p>
       <div class="head small">Then how do Python lists grow whenever they want?<button class="why-btn">why?</button></div>
       <div class="why-panel">
         <p>They secretly cheat: when the row is full, the computer finds a longer empty row somewhere else, copies everything across, and abandons the old row. To avoid doing this often, it books roughly double the space each time. Under every "flexible" list in every language, there is a plain fixed array being replaced when it bursts.</p>
@@ -536,9 +622,9 @@ student <b>n</b>'s mark → locker <b>5000 + n − 1</b></div>
 
 <section class="wide" id="breaks">
   <div class="wrap" style="padding:0;">
-    <div class="eyebrow">Step 5 · Where arrays hurt</div>
-    <h2>Nothing is free. Watch it break.</h2>
-    <p>The array's whole power comes from one strict rule: <em>everyone sits in position, side by side, no gaps.</em> Now watch what that rule costs. Suppose a new value must go at the <strong>front</strong> of the row. Nobody can just "squeeze in" — every single value must shift one locker to the right first. Click and watch:</p>
+    <div class="stepline"><span class="dot">5</span> Where it hurts <span class="rest">· nothing is free</span></div>
+    <h2>Now watch the array break</h2>
+    <p>The array's power comes from one strict rule: <em>everyone sits in position, side by side, no gaps.</em> Now watch what that rule costs you. Suppose a new value has to go at the <strong>front</strong> of the row. Nobody can just squeeze in. Every single value has to shift one locker to the right first. Press the button and watch:</p>
   </div>
   <div class="machine">
     <div class="label">Insert 99 at the front · everyone must move</div>
@@ -553,95 +639,108 @@ student <b>n</b>'s mark → locker <b>5000 + n − 1</b></div>
   <div class="wrap" style="padding:0;">
     <p>The honest list of array weaknesses:</p>
     <div class="cards">
-      <div class="rcard"><h3>Adding or removing in the middle</h3><span class="dim">Everyone after that spot must shift. The closer to the front, the more moves. O(n).</span></div>
-      <div class="rcard"><h3>Growing bigger</h3><span class="dim">The lockers next to your row may already belong to someone else. To grow, the computer finds a longer empty row elsewhere and copies everything across. O(n) again.</span></div>
-      <div class="rcard"><h3>Finding a value (not a position)</h3><span class="dim">"Which student scored 97?" Position tells you nothing about the value inside. You must check every locker. O(n).</span></div>
-      <div class="rcard"><h3>Reserved empty space</h3><span class="dim">To avoid moving often, lists secretly rent extra empty lockers. Fast, but wasteful.</span></div>
+      <div class="rcard"><h3>Adding or removing in the middle</h3><span class="dim">Everyone after that spot has to shift. The closer to the front, the more moves. That's O(n).</span></div>
+      <div class="rcard"><h3>Growing bigger</h3><span class="dim">The lockers next to your row might already belong to someone else. To grow, the computer finds a longer empty row elsewhere and copies everything across. O(n) again.</span></div>
+      <div class="rcard"><h3>Finding a value (not a position)</h3><span class="dim">"Which student scored 97?" The position tells you nothing about the value inside, so you have to check every locker. O(n).</span></div>
+      <div class="rcard"><h3>Reserved empty space</h3><span class="dim">To avoid moving so often, lists quietly rent extra empty lockers. Fast, but a bit wasteful.</span></div>
     </div>
-    <p>Here's the secret about all of DSA: <strong>every data structure you'll ever learn exists because the array hurt someone badly enough, in one of these exact spots, that they invented a way around it.</strong> Linked lists, stacks, queues, hash maps, trees — each one is a patch for one of these pains. That's the whole subject. It's not 50 random topics; it's one story.</p>
+
+    <div class="cp" data-cp="cp3" data-answer="b">
+      <div class="cp-tag">Quick check</div>
+      <div class="cp-q">You need to add new items at the <em>front</em> constantly, and you almost never jump to a position. Is an array a good fit?</div>
+      <div class="cp-opts">
+        <button data-opt="a">Yes, arrays are always the right choice</button>
+        <button data-opt="b">No. Front inserts cost O(n), and that's the one thing you'd do all day</button>
+        <button data-opt="c">Yes, because arrays never slow down</button>
+      </div>
+      <div class="cp-fb"><b>Spot on</b>You'd pay the array's worst cost over and over, and never use its best trick. That mismatch is exactly why the next structure, the linked list, exists.</div>
+      <div class="cp-nudge">Think back to the shifting demo you just watched. What did inserting at the front cost? Try again.</div>
+    </div>
+
+    <div class="aside-me"><div class="face">🔑</div><div class="txt"><b>The secret of all DSA</b>Every data structure you'll ever learn exists because the array hurt someone, in one of these exact spots, badly enough that they invented a way around it. Linked lists, stacks, queues, hash maps, trees, each one is a patch for one of these pains. It's not 50 random topics. It's one story.</div></div>
   </div>
 </section>
 
 <section class="wrap" id="real">
-  <div class="eyebrow">Step 6 · You already use arrays every day</div>
-  <h2>Where arrays hide in your daily life</h2>
+  <div class="stepline"><span class="dot">6</span> Daily life <span class="rest">· you already use arrays</span></div>
+  <h2>Where arrays hide in your day</h2>
   <div class="cards">
-    <div class="rcard"><h3>Every photo on your phone</h3><span class="dim">A photo is a grid of tiny colour dots (pixels) — an array of arrays. "The dot at row 800, column 600" is two little sums away.</span></div>
+    <div class="rcard"><h3>Every photo on your phone</h3><span class="dim">A photo is a grid of tiny colour dots (pixels), so it's an array of arrays. "The dot at row 800, column 600" is two little sums away.</span></div>
     <div class="rcard"><h3>Skipping inside a YouTube video</h3><span class="dim">A video is an array of picture frames. Dragging to 12:34 = frames-per-second × seconds = a position. That instant jump is O(1) with your own eyes.</span></div>
-    <div class="rcard"><h3>Your Spotify queue</h3><span class="dim">"Play track 7" doesn't listen through tracks 1–6 first. It jumps. Position → value.</span></div>
+    <div class="rcard"><h3>Your Spotify queue</h3><span class="dim">"Play track 7" doesn't listen through tracks 1 to 6 first. It jumps. Position → value.</span></div>
     <div class="rcard"><h3>Every word you read</h3><span class="dim">Text is an array of characters. The first letter of <code>name</code> is <code>name[0]</code>.</span></div>
-    <div class="rcard"><h3>Excel and marksheets</h3><span class="dim">Rows and columns — arrays of arrays. "Cell C42" is locker maths, twice.</span></div>
+    <div class="rcard"><h3>Excel and marksheets</h3><span class="dim">Rows and columns, arrays of arrays. "Cell C42" is locker maths, twice.</span></div>
     <div class="rcard"><h3>AI models</h3><span class="dim">The "weights" inside ChatGPT-like models are gigantic arrays. GPUs are fast mainly because arrays sit side by side in memory.</span></div>
   </div>
-  <p class="dim small">The pattern: wherever things have a natural <em>position</em> and you jump straight to positions — there's an array underneath.</p>
+  <p class="dim small">The pattern to notice: wherever things have a natural <em>position</em> and you jump straight to it, there's an array underneath.</p>
 
   <div class="next-card">
     <h3>Coming next: the crack in the wall</h3>
-    You saw insertion at the front hurt. What if your data gets inserted and removed in the middle <em>all the time</em>, and you almost never jump to a position? The array's deal becomes exactly backwards. The fix — letting values live anywhere, each one holding the address of the next — is called a <strong>linked list</strong>, and it's Module 2. You'll arrive there already knowing <em>why</em> it exists.
+    You saw how much inserting at the front hurt. So what if your data gets inserted and removed in the middle <em>all the time</em>, and you almost never jump to a position? The array's deal flips completely backwards. The fix lets values live anywhere, with each one holding the address of the next. It's called a <strong>linked list</strong>, and it's Module 2. You'll get there already knowing <em>why</em> it exists.
   </div>
 </section>
 
 <section class="wrap" id="problems">
-  <div class="eyebrow">Step 7 · Practice — only now</div>
+  <div class="stepline"><span class="dot">7</span> Practice <span class="rest">· now you're ready</span></div>
   <h2>Think like an engineer, not an exam-taker</h2>
-  <p class="dim small">Three real situations. No problem says "use an array" — the hints are questions that lead your own thinking, in the exact order a senior engineer asks them. Try to answer each hint in your head before opening the next one. Code comes last because it's the easiest part.</p>
+  <p class="dim small">Three real situations. None of them says "use an array". The hints are just questions that lead your own thinking, in the order a senior engineer would ask them. Try to answer each hint in your head before you open the next one. The code comes last, because it's the easy part.</p>
 
   <div class="problem" id="p1">
     <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 1 · warm-up</div>
-    <div class="scenario">You're building YouTube's video player. A viewer drags the red dot to 12:34 of a 3-hour video. The picture must change <em>instantly</em> — nobody accepts a loading circle in the middle of a drag.</div>
+    <div class="scenario">You're building YouTube's video player. A viewer drags the red dot to 12:34 of a 3-hour video. The picture must change <em>instantly</em>, nobody accepts a loading circle in the middle of a drag.</div>
     <div class="layer"><div class="ltag">Lead your own thinking</div>
       <div class="hints" data-hints="p1">
         <div class="hint"><b>Hint 1 · what is the data?</b>What is a video actually made of? Do those pieces have a natural order?</div>
         <div class="hint"><b>Hint 2 · what happens most often?</b>In plain words, what does dragging the red dot ask the computer to do? "Jump to any…" what?</div>
-        <div class="hint"><b>Hint 3 · what speed is demanded?</b>"Instant, no matter where they drag" — same effort for any position. You learned a nickname for that today.</div>
+        <div class="hint"><b>Hint 3 · what speed is demanded?</b>"Instant, no matter where they drag", same effort for any position. You learned a nickname for that today.</div>
         <div class="hint"><b>Hint 4 · what weakness disappears?</b>Frames arrive once, in order, at the end. Nothing is ever inserted in the middle of a finished video. So which array pain simply never happens here?</div>
       </div>
       <button data-next-hint="p1">Reveal hint 1</button>
     </div>
     <div class="layer">
       <div class="ltag">Discussion</div>
-      <button data-reveal="p1-d">I've decided my answer — show the discussion</button>
+      <button data-reveal="p1-d">I've decided my answer, show the discussion</button>
       <div class="reveal" id="p1-d">
-        <p style="margin-top:12px;">A video is an array of frames. Frames-per-second × 754 seconds = the position. One multiplication, one jump — O(1). And since finished videos never insert frames in the middle, the array's biggest weakness never fires. <strong>Data that is written once and jumped-into forever is the array's perfect customer.</strong></p>
+        <p style="margin-top:12px;">A video is an array of frames. Frames-per-second times 754 seconds gives you the position. One multiplication, one jump, so it's O(1). And because a finished video never inserts frames in the middle, the array's biggest weakness never even fires. <strong>Data that gets written once and jumped into forever is the array's perfect customer.</strong></p>
         <pre><span class="c">// jump to any moment, instantly</span>
 frame = frames[<span class="k">fps * seconds</span>]
 show(frame)</pre>
-        <p class="small dim">Interview extra: a 3-hour video is too big for memory, so real players cut it into chunks and array-jump twice — first to the right chunk, then to the right frame inside it. The idea survives by nesting.</p>
+        <p class="small dim">Interview extra: a 3-hour video is too big for memory, so real players cut it into chunks and array-jump twice. First to the right chunk, then to the right frame inside it. The same idea, just nested.</p>
       </div>
     </div>
   </div>
 
   <div class="problem" id="p2">
     <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 2 · the trap</div>
-    <div class="scenario">You work at Instagram. The feed must show <strong>newest posts first</strong>. Millions of new posts arrive every hour. Your teammate says: "Simple — keep an array, put each new post at position 0." Is that a good idea?</div>
+    <div class="scenario">You work at Instagram. The feed must show <strong>newest posts first</strong>. Millions of new posts arrive every hour. Your teammate says: "Simple, keep an array, put each new post at position 0." Is that a good idea?</div>
     <div class="layer"><div class="ltag">Lead your own thinking</div>
       <div class="hints" data-hints="p2">
         <div class="hint"><b>Hint 1 · what is the data?</b>What's the collection here, and what order does the app promise its users?</div>
         <div class="hint"><b>Hint 2 · what happens most often?</b>Two things happen non-stop. What are they?</div>
         <div class="hint"><b>Hint 3 · which one is expensive?</b>You watched "insert at the front" a few minutes ago. With 10 million posts stored, what does your teammate's plan cost for EVERY single new post?</div>
         <div class="hint"><b>Hint 4 · question the assumption</b>Does "newest shown first" really force "newest stored at position 0"? Who decided which end of the array is the front?</div>
-        <div class="hint"><b>Hint 5 · the trade</b>If you add new posts at the END (cheap — no shifting), what small thing must the reading side do differently?</div>
+        <div class="hint"><b>Hint 5 · the trade</b>If you add new posts at the END (cheap, no shifting), what small thing must the reading side do differently?</div>
       </div>
       <button data-next-hint="p2">Reveal hint 1</button>
     </div>
     <div class="layer">
       <div class="ltag">Discussion</div>
-      <button data-reveal="p2-d">I've decided my answer — show the discussion</button>
+      <button data-reveal="p2-d">I've decided my answer, show the discussion</button>
       <div class="reveal" id="p2-d">
-        <p style="margin-top:12px;">The teammate's plan shifts 10 million posts for every new arrival — O(n), millions of times an hour. The machine would spend its whole life shuffling. But "front" is just a habit, not a law. <strong>Add new posts at the end (no shifting — O(1)) and simply read the array backwards.</strong> The user sees exactly the same feed. The cost just vanishes — not with a fancy structure, but by questioning one assumption.</p>
-        <pre><span class="c">// writing — cheap</span>
+        <p style="margin-top:12px;">The teammate's plan shifts 10 million posts for every new arrival. That's O(n), happening millions of times an hour. The machine would spend its whole life shuffling. But "front" is just a habit, not a law. <strong>Add new posts at the end (no shifting, so O(1)) and just read the array backwards.</strong> The user sees exactly the same feed. The cost simply vanishes. Not with a fancy structure, but by questioning one assumption.</p>
+        <pre><span class="c">// writing: cheap</span>
 posts.append(new_post)
-<span class="c">// reading — newest first, free</span>
+<span class="c">// reading: newest first, free</span>
 <span class="k">for</span> i <span class="k">from</span> last position <span class="k">down to</span> 0:
     show(posts[i])</pre>
-        <p class="small dim">Interview extra: this "only ever add at the end" idea, at giant scale, is called an append-only log — it's the heart of how big systems like Kafka and databases record events. You just reasoned your way to it.</p>
+        <p class="small dim">Interview extra: this "only ever add at the end" idea, at giant scale, is called an append-only log. It's the heart of how big systems like Kafka and databases record events. You just reasoned your way to it.</p>
       </div>
     </div>
   </div>
 
   <div class="problem" id="p3">
     <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 3 · the clever swap</div>
-    <div class="scenario">You're building Spotify's shuffle. Every song must play exactly once, in random order, and pressing "next" must be instant — even with 10,000 songs.</div>
+    <div class="scenario">You're building Spotify's shuffle. Every song must play exactly once, in random order, and pressing "next" must be instant, even with 10,000 songs.</div>
     <div class="layer"><div class="ltag">Lead your own thinking</div>
       <div class="hints" data-hints="p3">
         <div class="hint"><b>Hint 1 · what is the data?</b>What's the collection, and what does "exactly once" forbid you from doing?</div>
@@ -654,16 +753,16 @@ posts.append(new_post)
     </div>
     <div class="layer">
       <div class="ltag">Discussion</div>
-      <button data-reveal="p3-d">I've decided my answer — show the discussion</button>
+      <button data-reveal="p3-d">I've decided my answer, show the discussion</button>
       <div class="reveal" id="p3-d">
-        <p style="margin-top:12px;">The lazy plan dies at the end: with one unplayed song left, you're rolling the dice ~10,000 times hoping to hit it. The elegant fix: keep all unplayed songs in positions 0 to k. Pick one at random, <strong>swap it to position k, then shrink k by one.</strong> The wall between "unplayed" and "played" is just a number. Every "next" costs exactly one swap — instant, forever.</p>
+        <p style="margin-top:12px;">The lazy plan dies at the end. With one unplayed song left, you're rolling the dice about 10,000 times hoping to hit it. The neat fix: keep all unplayed songs in positions 0 to k. Pick one at random, <strong>swap it to position k, then shrink k by one.</strong> The wall between "unplayed" and "played" is just a number. Every "next" costs exactly one swap. Instant, forever.</p>
         <pre>k = number of songs - 1
 <span class="k">when user presses next</span>:
     r = random position <span class="k">from</span> 0 <span class="k">to</span> k
     swap(songs[r], songs[k])
     k = k - 1
     play songs[k + 1]</pre>
-        <p class="small dim">Interview extra: you just re-invented the Fisher–Yates shuffle — an algorithm most people memorize from a book. You didn't memorize it; the costs cornered you into it. That's the difference this whole course is built on. (And real players shuffle a copy of position numbers, keeping your playlist order safe.)</p>
+        <p class="small dim">Interview extra: you just re-invented the Fisher-Yates shuffle, an algorithm most people memorize from a book. You didn't memorize it. The costs cornered you into it. That's the whole difference this course is built on. (And real players shuffle a copy of the position numbers, keeping your playlist order safe.)</p>
       </div>
     </div>
   </div>
@@ -674,14 +773,14 @@ posts.append(new_post)
 <section class="wrap" id="understanding">
   <div class="eyebrow">Your progress · measured in understanding, not solved counts</div>
   <h2>The arrays checklist</h2>
-  <p class="dim small">Tick a box only when you could explain that line to a friend, out loud, with this page closed. That test is harder than any quiz — and it's the only one that matters. Your ticks are saved on this device.</p>
+  <p class="dim small">Tick a box only when you could explain that line to a friend, out loud, with this page closed. That test is harder than any quiz, and it's the only one that matters. Your ticks are saved on this device.</p>
   <div class="check" id="checklist">
-    <label><input type="checkbox" data-key="mem"><span>I can explain <strong>what memory and a variable are</strong> — numbered lockers, and one locker with a name sticker</span></label>
-    <label><input type="checkbox" data-key="exist"><span>I can explain <strong>why arrays were invented</strong> — the 10,000-variables wall, and how "position finds the value" breaks it</span></label>
-    <label><input type="checkbox" data-key="o1"><span>I can explain <strong>why array access is O(1)</strong> — one small sum finds any locker, no matter how far</span></label>
-    <label><input type="checkbox" data-key="insert"><span>I can explain <strong>why inserting at the front is O(n)</strong> — the no-gaps rule forces everyone to shift</span></label>
-    <label><input type="checkbox" data-key="cache"><span>I can explain <strong>the cache gift</strong> — reading one value photocopies the whole shelf, so array loops fly</span></label>
-    <label><input type="checkbox" data-key="notuse"><span>I know <strong>when NOT to use an array</strong> — when the middle keeps changing and I rarely jump to positions</span></label>
+    <label><input type="checkbox" data-key="mem"><span>I can explain <strong>what memory and a variable are</strong>, numbered lockers, and one locker with a name sticker</span></label>
+    <label><input type="checkbox" data-key="exist"><span>I can explain <strong>why arrays were invented</strong>, the 10,000-variables wall, and how "position finds the value" breaks it</span></label>
+    <label><input type="checkbox" data-key="o1"><span>I can explain <strong>why array access is O(1)</strong>, one small sum finds any locker, no matter how far</span></label>
+    <label><input type="checkbox" data-key="insert"><span>I can explain <strong>why inserting at the front is O(n)</strong>, the no-gaps rule forces everyone to shift</span></label>
+    <label><input type="checkbox" data-key="cache"><span>I can explain <strong>the cache gift</strong>, reading one value photocopies the whole shelf, so array loops fly</span></label>
+    <label><input type="checkbox" data-key="notuse"><span>I know <strong>when NOT to use an array</strong>, when the middle keeps changing and I rarely jump to positions</span></label>
     <label><input type="checkbox" data-key="scenarios"><span>I thought through <strong>all three practice situations</strong> before opening the discussions</span></label>
   </div>
   <p id="check-msg" class="small dim"></p>
@@ -690,7 +789,7 @@ posts.append(new_post)
 <section class="wrap" id="plan">
   <div class="eyebrow">The road ahead</div>
   <h2>Zero to advanced: your one-month map</h2>
-  <p>Here is the honest version of "DSA in one month": in 30 days of steady 2–3 hours a day, you can genuinely understand every core structure and solve interview questions with reasoning instead of memory. Real speed and hard-problem instinct keep growing after that — but the <em>understanding</em>, the part you care about, fits in a month. Every module will be taught exactly like this page: story first, machine second, problems last.</p>
+  <p>Here is the honest version of "DSA in one month": in 30 days of steady 2 to 3 hours a day, you can genuinely understand every core structure and solve interview questions with reasoning instead of memory. Real speed and hard-problem instinct keep growing after that, but the <em>understanding</em>, the part you care about, fits in a month. Every module will be taught exactly like this page: story first, machine second, problems last.</p>
 
   <div class="week">
     <h3><span>Week 1</span> How computers remember</h3>
@@ -705,9 +804,9 @@ posts.append(new_post)
   <div class="week">
     <h3><span>Week 2</span> Patches for the array's pains</h3>
     <ul>
-      <li>Linked lists — born where insertion hurts (you already feel this coming)</li>
-      <li>Stacks and queues — arrays with house rules, and why rules make things easier</li>
-      <li>Hash maps — the "find by value, not position" pain, solved with a genius trick</li>
+      <li>Linked lists, born where insertion hurts (you already feel this coming)</li>
+      <li>Stacks and queues, arrays with house rules, and why rules make things easier</li>
+      <li>Hash maps, the "find by value, not position" pain, solved with a genius trick</li>
       <li>Practice: ~15 problems mixing all four</li>
     </ul>
     <div class="goal">End-of-week test: for any task, say WHICH structure and WHY, before writing a line.</div>
@@ -715,10 +814,10 @@ posts.append(new_post)
   <div class="week">
     <h3><span>Week 3</span> Divide, sort, and climb</h3>
     <ul>
-      <li>Recursion — a function that trusts a smaller version of itself</li>
-      <li>Sorting — why fast sorts are fast, not just their names</li>
-      <li>Binary search — the halving trick, and where it hides in real life</li>
-      <li>Trees — hierarchies, and why searching them is fast</li>
+      <li>Recursion, a function that trusts a smaller version of itself</li>
+      <li>Sorting, why fast sorts are fast, not just their names</li>
+      <li>Binary search, the halving trick, and where it hides in real life</li>
+      <li>Trees, hierarchies, and why searching them is fast</li>
       <li>Practice: ~15 problems</li>
     </ul>
     <div class="goal">End-of-week test: explain why sorted data changes everything.</div>
@@ -726,15 +825,15 @@ posts.append(new_post)
   <div class="week">
     <h3><span>Week 4</span> Networks, priorities, and choices</h3>
     <ul>
-      <li>Graphs — friends-of-friends, maps, the internet; walking them with BFS and DFS</li>
-      <li>Heaps — always knowing the biggest or smallest, cheaply</li>
-      <li>Dynamic programming, gently — remembering answers so you never solve twice</li>
+      <li>Graphs, friends-of-friends, maps, the internet; walking them with BFS and DFS</li>
+      <li>Heaps, always knowing the biggest or smallest, cheaply</li>
+      <li>Dynamic programming, gently, remembering answers so you never solve twice</li>
       <li>Practice: mixed interview-style scenarios, like today's Instagram and Spotify problems</li>
     </ul>
     <div class="goal">End-of-month test: take a problem you've never seen and reason from data → operations → cost → structure, out loud.</div>
   </div>
 
-  <p class="dim small" style="margin-top:20px;">When you finish this page's checklist, come back to Claude and say: <strong>"Module 2 — linked lists."</strong> It will start exactly where the array cracked.</p>
+  <p class="dim small" style="margin-top:20px;">When you finish this page's checklist, come back to Claude and say: <strong>"Module 2, linked lists."</strong> It will start exactly where the array cracked.</p>
 </section>
 
 <footer>
@@ -849,7 +948,7 @@ posts.append(new_post)
   $('btn-compute').addEventListener('click', function () {
     var i = getIdx();
     renderStrip(i);
-    $('ram-formula').innerHTML = '5000 + <b>' + fmt(i) + '</b> = locker <b>' + fmt(BASE + i) + '</b> — calculated, not searched.';
+    $('ram-formula').innerHTML = '5000 + <b>' + fmt(i) + '</b> = locker <b>' + fmt(BASE + i) + '</b>, calculated, not searched.';
     $('calc-count').textContent = '1 sum';
     $('calc-sub').textContent = 'the same single addition, for any position';
   });
@@ -895,7 +994,7 @@ posts.append(new_post)
         c.classList.toggle('lit', j === k);
         c.classList.toggle('warm', j !== k);
       });
-      $('cache-note').innerHTML = 'You asked for position <b>' + k + '</b>. The computer photocopied the whole shelf onto its desk — all 16 values. The next reads in your loop cost almost nothing.';
+      $('cache-note').innerHTML = 'You asked for position <b>' + k + '</b>. The computer photocopied the whole shelf onto its desk, all 16 values. The next reads in your loop cost almost nothing.';
     }
     box.addEventListener('click', function (e) {
       var c = e.target.closest('.cell');
@@ -970,7 +1069,7 @@ posts.append(new_post)
     btn.addEventListener('click', function () {
       if (shown < hints.length) { open(hints[shown]); shown++; }
       if (shown >= hints.length) {
-        btn.textContent = 'That was the last hint — now decide your answer';
+        btn.textContent = 'That was the last hint, now decide your answer';
         btn.disabled = true;
       } else {
         btn.textContent = 'Reveal hint ' + (shown + 1);
@@ -983,6 +1082,31 @@ posts.append(new_post)
     btn.addEventListener('click', function () {
       open($(btn.dataset.reveal));
       btn.style.display = 'none';
+    });
+  });
+
+  /* ---------- check-your-understanding (no scores, just feedback) ---------- */
+  document.querySelectorAll('.cp').forEach(function (cp) {
+    var answer = cp.dataset.answer;
+    var opts = cp.querySelectorAll('.cp-opts button');
+    var fb = cp.querySelector('.cp-fb');
+    var nudge = cp.querySelector('.cp-nudge');
+    var solved = false;
+    opts.forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (solved) return;
+        if (b.dataset.opt === answer) {
+          solved = true;
+          b.classList.add('right');
+          if (nudge) nudge.classList.remove('show');
+          opts.forEach(function (x) { x.disabled = true; });
+          if (fb) fb.classList.add('show');
+        } else {
+          b.classList.add('nope');
+          b.disabled = true;
+          if (nudge) nudge.classList.add('show');
+        }
+      });
     });
   });
 
@@ -1009,8 +1133,8 @@ posts.append(new_post)
     $('progress-fill').style.width = pct + '%';
     $('progress-num').textContent = pct + '%';
     $('check-msg').textContent =
-      done === boxes.length ? 'All seven. You now understand arrays more deeply than most people who have solved 200 problems. When you\'re ready, tell Claude: "Module 2 — linked lists."' :
-      done >= 4 ? 'More than halfway — the remaining lines are the ones interviews actually test.' : '';
+      done === boxes.length ? 'All seven. You now understand arrays more deeply than most people who have solved 200 problems. When you\'re ready, tell Claude: "Module 2, linked lists."' :
+      done >= 4 ? 'More than halfway, the remaining lines are the ones interviews actually test.' : '';
   }
   boxes.forEach(function (b) {
     b.addEventListener('change', function () { saveChecks(); updateProgress(); });
@@ -1019,23 +1143,23 @@ posts.append(new_post)
 
   /* ---------- course map ---------- */
   var arcs = [
-    { tag: 'Arc 0 · Week 1', name: 'Foundations', sub: 'How a computer remembers — and the first structure ever invented.', mods: [
+    { tag: 'Arc 0 · Week 1', name: 'Foundations', sub: 'How a computer remembers, and the first structure ever invented.', mods: [
       { n: 'Module 0', t: 'How a computer remembers', born: 'You can\'t ask 10,000 named boxes for "number n". Memory, variables, arrays, O(1) vs O(n), cache.', st: 'live' },
-      { n: 'Module 1', t: 'Strings', born: 'Text is just an array of characters — so every array trick suddenly works on words.', st: 'next' },
+      { n: 'Module 1', t: 'Strings', born: 'Text is just an array of characters, so every array trick suddenly works on words.', st: 'next' },
       { n: 'Module 2', t: 'Grids (2D arrays)', born: 'Photos, game boards and marksheets are rows of rows. Locker maths, done twice.', st: 'lock' },
       { n: 'Module 3', t: 'Two pointers & sliding window', born: 'Scanning an array twice is often once too many. Two techniques born inside arrays.', st: 'lock' }
     ]},
     { tag: 'Arc 1 · Week 2', name: 'Patches for the array\'s pains', sub: 'Each structure here fixes one exact array weakness you watched break.', mods: [
       { n: 'Module 4', t: 'Linked lists', born: 'Inserting at the front shifted 10 million values. What if each value simply held the address of the next?', st: 'lock' },
       { n: 'Module 5', t: 'Stacks', born: 'Undo, the back button, and function calls only ever touch the newest thing. A rule that makes life easier.', st: 'lock' },
-      { n: 'Module 6', t: 'Queues', born: 'Waiting lines want the oldest first — but removing from an array\'s front hurts. There\'s a circular trick.', st: 'lock' },
+      { n: 'Module 6', t: 'Queues', born: 'Waiting lines want the oldest first, but removing from an array\'s front hurts. There\'s a circular trick.', st: 'lock' },
       { n: 'Module 7', t: 'Hash maps & sets', born: '"Which student scored 97?" forced a full search. A genius trick turns the VALUE itself into a locker number.', st: 'lock' }
     ]},
-    { tag: 'Arc 2 · Week 3', name: 'Self-reference and order', sub: 'Problems that contain smaller copies of themselves — and the power of sorted data.', mods: [
+    { tag: 'Arc 2 · Week 3', name: 'Self-reference and order', sub: 'Problems that contain smaller copies of themselves, and the power of sorted data.', mods: [
       { n: 'Module 8', t: 'Recursion', born: 'Some problems are built from smaller versions of themselves. A function that trusts its smaller self.', st: 'lock' },
-      { n: 'Module 9', t: 'Sorting', born: 'Sorted data makes a hundred impossible things easy. Why the fast sorts are fast — not just their names.', st: 'lock' },
-      { n: 'Module 10', t: 'Binary search', born: 'Halving beats walking — 10,000 lockers found in 14 peeks. But only on sorted rows.', st: 'lock' },
-      { n: 'Module 11', t: 'Trees & BSTs', born: 'Sorted arrays search fast but change slowly. Trees do both — if they stay balanced.', st: 'lock' }
+      { n: 'Module 9', t: 'Sorting', born: 'Sorted data makes a hundred impossible things easy. Why the fast sorts are fast, not just their names.', st: 'lock' },
+      { n: 'Module 10', t: 'Binary search', born: 'Halving beats walking, 10,000 lockers found in 14 peeks. But only on sorted rows.', st: 'lock' },
+      { n: 'Module 11', t: 'Trees & BSTs', born: 'Sorted arrays search fast but change slowly. Trees do both, if they stay balanced.', st: 'lock' }
     ]},
     { tag: 'Arc 3', name: 'Priority and prefixes', sub: 'Cheap answers to "the biggest?", "starts with…?", and "sum of this range?"', mods: [
       { n: 'Module 12', t: 'Heaps (priority queues)', born: '"Always hand me the biggest" shouldn\'t cost a full re-sort every time.', st: 'lock' },
@@ -1047,20 +1171,20 @@ posts.append(new_post)
       { n: 'Module 16', t: 'Shortest paths & topological order', born: '"Fastest route home" and "what must happen before what".', st: 'lock' },
       { n: 'Module 17', t: 'Union-Find', born: '"Are these two connected?" asked a million times, answered almost instantly.', st: 'lock' }
     ]},
-    { tag: 'Arc 5', name: 'Making choices', sub: 'When you must choose, prove your choice — or organize your guessing.', mods: [
+    { tag: 'Arc 5', name: 'Making choices', sub: 'When you must choose, prove your choice, or organize your guessing.', mods: [
       { n: 'Module 18', t: 'Greedy', born: 'Sometimes the locally best choice is provably good enough. Knowing WHEN is the skill.', st: 'lock' },
       { n: 'Module 19', t: 'Backtracking', born: 'When you truly must try everything, try it in an organized, prunable way.', st: 'lock' },
       { n: 'Module 20', t: 'Dynamic programming I', born: 'Stop solving the same subproblem twice. Remembering answers changes everything.', st: 'lock' },
-      { n: 'Module 21', t: 'Dynamic programming II', born: 'Turning remembered answers into tables — and the classic patterns interviews love.', st: 'lock' }
+      { n: 'Module 21', t: 'Dynamic programming II', born: 'Turning remembered answers into tables, and the classic patterns interviews love.', st: 'lock' }
     ]},
-    { tag: 'Arc 6', name: 'The advanced floor', sub: 'The "final level" topics — each one still just a patch for a pain you\'ll have felt.', mods: [
+    { tag: 'Arc 6', name: 'The advanced floor', sub: 'The "final level" topics, each one still just a patch for a pain you\'ll have felt.', mods: [
       { n: 'Module 22', t: 'Segment & Fenwick trees', born: 'Range questions on data that keeps changing under you.', st: 'lock' },
       { n: 'Module 23', t: 'Advanced graphs', born: 'Cheapest possible networks, weak points, and bridges.', st: 'lock' },
       { n: 'Module 24', t: 'Bit manipulation', born: 'Sometimes the fastest data structure is the number itself.', st: 'lock' },
       { n: 'Module 25', t: 'String algorithms', born: 'Finding a needle in a text without re-reading the haystack. KMP and rolling hashes.', st: 'lock' }
     ]},
-    { tag: 'Arc 7 · The arena', name: 'Interview arena', sub: 'Everything mixed, under time, out loud — the way interviews actually are.', mods: [
-      { n: 'Module 26', t: 'Mock scenarios', born: 'Unseen problems, reasoned data → operations → cost → structure, like today\'s Instagram and Spotify problems — but timed.', st: 'lock' }
+    { tag: 'Arc 7 · The arena', name: 'Interview arena', sub: 'Everything mixed, under time, out loud, the way interviews actually are.', mods: [
+      { n: 'Module 26', t: 'Mock scenarios', born: 'Unseen problems, reasoned data → operations → cost → structure, like today\'s Instagram and Spotify problems, but timed.', st: 'lock' }
     ]}
   ];
 
@@ -1074,7 +1198,7 @@ posts.append(new_post)
                      m.st === 'next' ? '<span class="st st-next">Next up</span>' :
                      '<span class="st st-lock">Built when you arrive</span>';
           var enter = m.st === 'live' ? '<button class="enter" data-enter="m0">Enter module →</button>' :
-                      m.st === 'next' ? '<div class="born" style="margin-top:10px;"><b>To unlock</b>Finish Module 0\'s checklist, then tell Claude: "' + m.n + ' — ' + m.t + '"</div>' : '';
+                      m.st === 'next' ? '<div class="born" style="margin-top:10px;"><b>To unlock</b>Finish Module 0\'s checklist, then tell Claude: "' + m.n + ': ' + m.t + '"</div>' : '';
           return '<div class="mod ' + m.st + '"><div class="mnum">' + m.n + '</div><h3>' + m.t + '</h3>' +
             '<div class="born"><b>Born because</b>' + m.born + '</div>' + chip + enter + '</div>';
         }).join('') + '</div></div>';
