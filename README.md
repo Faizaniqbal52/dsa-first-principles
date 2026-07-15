@@ -8,6 +8,26 @@ Coding questions come *last*, after you understand the problem the structure
 was born to solve.
 
 **Live page:** open `index.html` in any browser (or enable GitHub Pages to host it).
+It opens on the course map; click a live module to open its own page.
+
+## Project layout
+
+Each module is its own page, so no single file gets overwhelming:
+
+```
+index.html              the course map (home)
+modules/
+  module-0.html         Module 0: how a computer remembers (arrays)
+assets/
+  base.css              shared styles for every page
+  map.js                renders the course map + progress
+  module0.js            Module 0 interactivity
+```
+
+New modules are added as `modules/module-N.html` reusing `assets/base.css`, with
+their own small `assets/moduleN.js`. The map in `index.html` links to each one.
+Progress is shared through the browser's local storage, so the map always shows
+how far you are.
 
 ## How every module is taught
 
