@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#12161B"/>
+  <text x="256" y="256" text-anchor="middle" dominant-baseline="central"
+        font-family="'Cascadia Code','SF Mono',Consolas,ui-monospace,monospace"
+        font-size="196" font-weight="700" fill="#E5953F" letter-spacing="-6">[0]</text>
+</svg>
