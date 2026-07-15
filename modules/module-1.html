@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 1 · Strings · First principles</title>
+<link rel="stylesheet" href="../assets/base.css">
+</head>
+<body>
+
+<nav class="rail" aria-label="Module navigation">
+  <div class="rail-inner">
+    <span class="rail-name">First principles · DSA</span>
+    <div class="rail-links">
+      <a href="../index.html" style="font-weight:600;">⌂ Course map</a>
+      <a href="#start">Start</a>
+      <a href="#story">Story</a>
+      <a href="#invention">Strings</a>
+      <a href="#inside">Inside</a>
+      <a href="#breaks">Breaks</a>
+      <a href="#real">Daily life</a>
+      <a href="#problems">Practice</a>
+      <a href="#code">Code it</a>
+      <a href="#plan">Next</a>
+    </div>
+    <div class="rail-progress" title="Your progress in this module">
+      <div class="rail-bar"><span id="progress-fill"></span></div>
+      <span id="progress-num">0%</span>
+    </div>
+  </div>
+</nav>
+
+<div id="view-m1">
+<header class="hero wrap" id="start">
+  <div class="stepline"><span class="dot">1</span> Start from what you know <span class="rest">· Module 1</span></div>
+  <h1>Strings: text is just an array in disguise</h1>
+  <p class="big">You already did the hard part in Module 0. A string is an array. Once you see why, every array trick you learned works on words too, for free.</p>
+
+  <div class="aside-me"><div class="face">👋</div><div class="txt"><b>Before we start</b>If arrays still feel shaky, go back one module. This one leans on them the whole way. If arrays clicked, this will feel easy.</div></div>
+
+  <div class="word"><b>Quick recap · Array</b>
+  A row of memory lockers, side by side, found by position. Position 0 is the first, and jumping to any position is one small sum (O(1)).</div>
+
+  <p>Hold that thought. We're about to hit a problem that arrays, as you know them, can't obviously solve.</p>
+  <p style="margin-top:10px;"><a href="#story" style="color:var(--accent);font-family:var(--sans);font-size:15px;">Here comes the problem ↓</a></p>
+</header>
+
+<section class="wrap" id="story">
+  <div class="stepline"><span class="dot">2</span> The story <span class="rest">· why strings exist</span></div>
+  <h2>The computer only knows numbers. So how does it remember a word?</h2>
+  <p>Your array holds numbers: marks, ages, prices. Lockers hold numbers. That's all a computer can physically store, tiny numbers in numbered lockers.</p>
+  <p class="big">Now the school asks for one more thing: <strong>store each student's name.</strong></p>
+  <p class="dim small">A name like <code>AMY</code> is letters, not numbers. A locker can't hold the letter A. So what do you do? Pick whatever feels natural.</p>
+
+  <div class="chips" id="ch1-choices">
+    <button data-choice="a">Invent a new kind of locker that can hold letters</button>
+    <button data-choice="b">Give every letter its own number, then store the numbers</button>
+    <button data-choice="c">Honestly, no idea</button>
+  </div>
+
+  <div class="reveal" id="ch1-r-a">
+    <div class="response"><span class="who">Reasonable, but no</span>The hardware can't change. A memory locker holds a number, full stop. We can't build a "letter locker". So we have to be cleverer with the numbers we already have.</div>
+  </div>
+  <div class="reveal" id="ch1-r-b">
+    <div class="response"><span class="who">That's the one</span>Exactly what humans did. If everyone agrees that a certain number means a certain letter, then storing letters becomes storing numbers, and you already know how to store numbers.</div>
+  </div>
+  <div class="reveal" id="ch1-r-c">
+    <div class="response"><span class="who">Honest answer</span>No problem. The trick is simple once you see it: don't store letters at all. Store numbers that everyone agrees stand for letters.</div>
+  </div>
+
+  <div class="reveal" id="ch1-vars">
+    <p style="margin-top:22px;">In the 1960s, people sat down and agreed on a shared codebook. It's called <strong>ASCII</strong>. It just says which number means which letter:</p>
+    <div class="machine">
+      <div class="label">The codebook · a tiny piece of ASCII</div>
+      <div class="formula"><b>A</b> = 65 &nbsp;&nbsp; <b>B</b> = 66 &nbsp;&nbsp; <b>C</b> = 67 &nbsp;&nbsp; … &nbsp;&nbsp; <b>Y</b> = 89 &nbsp;&nbsp; <b>Z</b> = 90<br>
+<b>a</b> = 97 &nbsp;&nbsp; <b>b</b> = 98 &nbsp;&nbsp; … &nbsp;&nbsp; <b>space</b> = 32 &nbsp;&nbsp; <b>!</b> = 33 &nbsp;&nbsp; <b>0</b> = 48</div>
+      <div class="mnote">So the name <b>AMY</b> is really just three numbers: 65, 77, 89. And three numbers in a row is something you already know how to store.</div>
+    </div>
+    <p class="big" style="margin-top:22px;">A word is a <strong>row of these letter-numbers, side by side.</strong></p>
+    <p>Wait. A row of numbers, side by side, found by position? That's an array. You didn't need a new idea at all. A string is just an array whose values happen to be letter-codes.</p>
+    <button class="primary" id="ch1-continue">Show me the invention →</button>
+  </div>
+  <p style="margin-top:26px;"><button class="skip" id="skip-story">I get it already, skip ahead</button></p>
+</section>
+
+<div class="reveal" id="rest">
+
+<section class="wrap" id="invention">
+  <div class="stepline"><span class="dot">3</span> The idea <span class="rest">· string = array of characters</span></div>
+  <h2>A character is a number. A string is an array of them.</h2>
+  <p>Here's the whole module in one line: <strong>a string is an array of characters, and a character is just a small number from the codebook.</strong></p>
+  <div class="word"><b>New word · Character</b>
+  A single letter, digit, space, or symbol. Inside the machine it's stored as its codebook number. In C++ the type is <code>char</code>, and one <code>char</code> is one small number.</div>
+  <div class="word"><b>New word · String</b>
+  A row of characters, side by side, found by position, exactly like an array. <code>name[0]</code> is the first letter. In C++ the type is <code>string</code>.</div>
+
+  <div class="cp" data-cp="cp1" data-answer="b">
+    <div class="cp-tag">Quick check</div>
+    <div class="cp-q">If <code>name = "AMY"</code>, what is <code>name[0]</code>?</div>
+    <div class="cp-opts">
+      <button data-opt="a">The whole word "AMY"</button>
+      <button data-opt="b">The character <code>'A'</code> (stored as the number 65)</button>
+      <button data-opt="c">The number of letters, which is 3</button>
+    </div>
+    <div class="cp-fb"><b>Yes</b>A string is an array, so position 0 is the first item, which is the character <code>'A'</code>. And <code>'A'</code> is really the number 65 under the hood.</div>
+    <div class="cp-nudge">Not quite. Remember, a string is an array of characters, and arrays start at position 0. What sits at position 0 of "AMY"? Try again.</div>
+  </div>
+
+  <div class="aside-me"><div class="face">🎁</div><div class="txt"><b>The free gift</b>Because a string is literally an array, everything from Module 0 comes along at no cost: O(1) jump to any character, the cache speed-up when you scan left to right, and the same pain when you insert in the middle. You are not learning a new structure. You are reusing one.</div></div>
+</section>
+
+<section class="wide" id="inside">
+  <div class="wrap" style="padding:0;">
+    <div class="stepline"><span class="dot">4</span> Look inside <span class="rest">· watch text become numbers</span></div>
+    <h2>Type a word, see the lockers</h2>
+    <p>Type any short word below. Watch the computer turn each letter into its codebook number and lay them in a row, one per locker. This is what "text" really is.</p>
+  </div>
+  <div class="machine">
+    <div class="label">Your word · one character per locker · try it yourself</div>
+    <div class="mrow">
+      <label for="word-input" style="font-size:13px;color:var(--machine-dim);">type a word:</label>
+      <input type="text" id="word-input" maxlength="12" placeholder="AMY" style="width:160px;">
+      <button id="btn-encode">Turn it into numbers</button>
+    </div>
+    <div class="cells-outer"><div class="cells" id="word-cells"></div></div>
+    <div class="mnote" id="word-note">Each letter becomes one number from the shared codebook. A row of numbers, side by side. An array.</div>
+  </div>
+
+  <div class="wrap" style="padding:0;">
+    <h3 style="margin-top:34px;">Two pointers, watch a word reverse itself</h3>
+    <p>Here's the move you'll use constantly on strings. One pointer at each end. Swap them, step inward, repeat until they meet. No second copy needed. Press it:</p>
+  </div>
+  <div class="machine">
+    <div class="label">Reverse in place · two pointers walking inward</div>
+    <div class="cells-outer"><div class="cells" id="rev-cells"></div></div>
+    <div class="mrow">
+      <button id="btn-reverse">Reverse it</button>
+      <button id="btn-rev-reset">Reset</button>
+      <span style="font-size:13px;color:var(--machine-dim);">swaps: <span id="rev-count" style="color:var(--amber-bright);">0</span></span>
+    </div>
+    <div class="mnote" id="rev-note">The two lit lockers are the pointers. Each step swaps them and moves both one closer to the middle. A word of 9 letters needs just 4 swaps.</div>
+  </div>
+
+  <div class="wrap" style="padding:0;">
+    <div class="word"><b>The handy trick · <code>c - 'a'</code></b>
+    Since letters are numbers, you can do maths on them. <code>'c' - 'a'</code> is 99 minus 97, which is 2, so <code>'c'</code> is the 2nd letter (counting from 0). This tiny trick turns any lowercase letter into a position from 0 to 25. You'll use it constantly.</div>
+  </div>
+</section>
+
+<section class="wrap" id="whys">
+  <div class="stepline"><span class="dot">✦</span> Bonus <span class="rest">· go deeper, optional</span></div>
+  <h2>Still curious? Keep asking why</h2>
+  <p class="dim small">Optional, as before. Press <em>why?</em> to open each reason. Skip it and come back whenever.</p>
+
+  <div class="claim">
+    <div class="head">Uppercase <code>'A'</code> and lowercase <code>'a'</code> are different numbers.<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>They have to be, or the computer couldn't tell them apart. <code>'A'</code> is 65 and <code>'a'</code> is 97. Notice they're exactly 32 apart. That gap is the same for every letter, which is why "make it lowercase" is really just "add 32".</p>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="head">Letters don't start at 0. <code>'A'</code> is 65.<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>The first 32 codes (0 to 31) were saved for control signals, not printable text, things like "new line" and "tab" and the old "ring the bell". Then space is 32, digits are 48 to 57, and capital letters begin at 65. It's a historical layout, but once everyone agreed on it, it stuck forever.</p>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="head">One emoji can take several lockers.<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>ASCII only had room for English. The world has far more symbols than fit in one small number, so a bigger codebook called <strong>Unicode</strong> took over, and a scheme called UTF-8 stores each symbol in one to four lockers. So "length" gets tricky: what looks like one emoji on screen might be four characters in memory. For a-z problems you can ignore this, but it's why counting characters in real text is harder than it looks.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wide" id="breaks">
+  <div class="wrap" style="padding:0;">
+    <div class="stepline"><span class="dot">5</span> Where it hurts <span class="rest">· the string traps</span></div>
+    <h2>Same array, same weaknesses, plus one nasty trap</h2>
+    <p>Because a string is an array, it inherits every array weakness: inserting or deleting in the middle shifts everyone (O(n)), and searching for a value means checking every locker (O(n)). But strings add one trap that catches almost every beginner.</p>
+  </div>
+  <div class="wrap" style="padding:0;">
+    <div class="cards">
+      <div class="rcard"><h3>The concatenation trap</h3><span class="dim">Building a big string by adding one piece at a time, inside a loop, can quietly cost O(n²). Each "add" may copy the whole string so far to a bigger spot. A thousand adds means copying again and again.</span></div>
+      <div class="rcard"><h3>Insert or delete in the middle</h3><span class="dim">Removing a character from the front shifts every other character left. Same no-gaps rule as arrays, same O(n) cost.</span></div>
+      <div class="rcard"><h3>Copies feel free but aren't</h3><span class="dim">Passing a big string around by value copies all of it. In C++, pass by reference (<code>string&amp;</code>) when you can, to skip the copy.</span></div>
+    </div>
+    <div class="cp" data-cp="cp2" data-answer="a">
+      <div class="cp-tag">Quick check</div>
+      <div class="cp-q">You build a huge string by doing <code>result += piece</code> a million times in a loop. What's the danger?</div>
+      <div class="cp-opts">
+        <button data-opt="a">It can become O(n²) if each add recopies the whole string so far</button>
+        <button data-opt="b">Nothing, adding is always O(1)</button>
+        <button data-opt="c">The letters will come out in the wrong order</button>
+      </div>
+      <div class="cp-fb"><b>Right</b>This is the classic string trap. Each <code>+=</code> may have to copy everything built so far into a bigger space. Reserve space up front, or build into one buffer, and it drops back to O(n).</div>
+      <div class="cp-nudge">Think back to how arrays grow: when they run out of room, they copy everything to a bigger row. Now imagine that happening on every add. Try again.</div>
+    </div>
+    <div class="aside-me"><div class="face">🔑</div><div class="txt"><b>The pattern again</b>Every string weakness is an array weakness you already met. That's the whole point of doing arrays first. New topic, same bones.</div></div>
+  </div>
+</section>
+
+<section class="wrap" id="real">
+  <div class="stepline"><span class="dot">6</span> Daily life <span class="rest">· strings are everywhere</span></div>
+  <h2>Where strings hide in your day</h2>
+  <div class="cards">
+    <div class="rcard"><h3>Every message you send</h3><span class="dim">A text is a string of characters. Autocorrect, character counts, and "seen at 9:41" are all string work.</span></div>
+    <div class="rcard"><h3>Search boxes</h3><span class="dim">"Does this product name contain what I typed?" is a string scan, done millions of times a second.</span></div>
+    <div class="rcard"><h3>Web addresses</h3><span class="dim">A URL is a string the browser slices into pieces: the site, the path, the query. All position and substring work.</span></div>
+    <div class="rcard"><h3>Passwords</h3><span class="dim">Strength rules ("has a digit, has a symbol") are just scans over the characters, counting what's there.</span></div>
+    <div class="rcard"><h3>DNA</h3><span class="dim">Biologists store genomes as strings over just four letters, A C G T, and run string algorithms to find patterns.</span></div>
+    <div class="rcard"><h3>Code itself</h3><span class="dim">The program you write is a string. The compiler reads it character by character before it ever runs.</span></div>
+  </div>
+
+  <div class="next-card">
+    <h3>Coming next: rows of rows</h3>
+    A string is one row of characters. But a photo is a grid of colour dots, and a game board is a grid of squares. What happens when you need rows stacked into a grid, found by row <em>and</em> column? That's Module 2, grids (2D arrays), and it's just locker maths done twice.
+  </div>
+</section>
+
+<section class="wrap" id="problems">
+  <div class="stepline"><span class="dot">7</span> Practice <span class="rest">· think first</span></div>
+  <h2>Spot the string pattern</h2>
+  <p class="dim small">Three real situations. As before, the hints are questions, not answers. Try each in your head before opening the next. Notice how often the answer is "two pointers" or "count the characters".</p>
+
+  <div class="problem" id="p1">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 1 · warm-up</div>
+    <div class="scenario">A chat app has a "reverse text" party trick: type a word, it shows it backwards. You must reverse the characters without using extra memory for a second copy.</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p1">
+        <div class="hint"><b>Hint 1 · what is the data?</b>A word is a row of characters. What did you use in the Spotify and Move Zeroes problems to walk a row from both ends?</div>
+        <div class="hint"><b>Hint 2 · the move</b>What if you swapped the first and last characters, then the second and second-to-last, working inward?</div>
+        <div class="hint"><b>Hint 3 · when do you stop?</b>The two pointers move toward each other. When they meet in the middle, what's left to do?</div>
+      </div>
+      <button data-next-hint="p1">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p1-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p1-d">
+        <p style="margin-top:12px;">Put one pointer at the start and one at the end. Swap them, then step both inward. Stop when they meet. No second copy needed, so O(1) extra space. This is the exact same two-pointer wall you used on Spotify and Move Zeroes, now on characters. <strong>The pattern travels across topics.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="problem" id="p2">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 2 · the counting trick</div>
+    <div class="scenario">A spam team wants to catch impersonators who just shuffle letters, like <code>netflix</code> and <code>flintex</code>. Given two usernames, decide fast if one is an anagram of the other (same letters, same counts).</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p2">
+        <div class="hint"><b>Hint 1 · what makes them anagrams?</b>Forget order. What has to be true about the <em>counts</em> of each letter in both words?</div>
+        <div class="hint"><b>Hint 2 · the lazy plan</b>You could sort both words and compare. That works. What does sorting cost, and is it more than you actually need?</div>
+        <div class="hint"><b>Hint 3 · the c - 'a' trick</b>You only care about counts of 26 letters. Could you keep a tally in a small array of size 26, using <code>c - 'a'</code> as the position?</div>
+        <div class="hint"><b>Hint 4 · one array, two passes</b>Add one for each letter of the first word, subtract one for each letter of the second. If everything ends at zero, what does that mean?</div>
+      </div>
+      <button data-next-hint="p2">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p2-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p2-d">
+        <p style="margin-top:12px;">Sorting works but costs O(n log n), and you don't need the order at all. You only need counts. Keep an array of 26 tallies. Add for the first word, subtract for the second. All zeros at the end means identical letter counts, so anagram. That's O(n), one pass each. <strong>Turning a character into an index with <code>c - 'a'</code> is a baby version of hashing, which you'll meet in full at hash maps.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="problem" id="p3">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 3 · scan and remember</div>
+    <div class="scenario">A typing game highlights the first letter in a word that never repeats. For <code>swiss</code> the answer is <code>w</code>. You need the first non-repeating character.</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p3">
+        <div class="hint"><b>Hint 1 · what do you need to know?</b>To call a letter "non-repeating", what do you first have to know about every letter?</div>
+        <div class="hint"><b>Hint 2 · count first</b>What if you did one pass to count how many times each letter appears (that size-26 array again)?</div>
+        <div class="hint"><b>Hint 3 · then scan</b>After counting, do a second pass in order. What's the first letter whose count is exactly 1?</div>
+        <div class="hint"><b>Hint 4 · why two passes?</b>Could you do it in one pass? Why does "first in order" force you to know all the counts before you answer?</div>
+      </div>
+      <button data-next-hint="p3">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p3-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p3-d">
+        <p style="margin-top:12px;">Two passes. First, count every letter into a size-26 array. Second, walk the word in order and return the first letter whose count is 1. You need all the counts before you can trust "non-repeating", which is why you can't finish in a single pass. Cost: O(n) time, O(1) space (26 slots). <strong>Count first, then decide is a pattern you'll reuse forever.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="code">
+  <div class="stepline"><span class="dot">8</span> Now code it <span class="rest">· C++, interview-style</span></div>
+  <h2>Two string problems, same five-step method</h2>
+  <p>Exactly the method from Module 0: understand, brute force, find the waste, pseudo-code, then code and cost. The problems change, the method doesn't.</p>
+  <p class="dim small">Try each yourself first. Open a step only after a real attempt.</p>
+
+  <div class="lc">
+    <div class="lc-head"><span class="lc-tag lc-easy">Easy · warm-up</span><span class="lc-src">LeetCode 344 · Reverse String</span></div>
+    <div class="lc-statement">
+      <p>Reverse a list of characters <strong>in place</strong>, using no second array.</p>
+      <p class="lc-eg">Example: <code>['h','e','l','l','o']</code> becomes <code>['o','l','l','e','h']</code></p>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 1 · Understand it</div>
+      <button class="unfold-btn">Say it back in plain words</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Input: a row of characters. Output: the same row, reversed, changed in place. No new array allowed. Edge cases: an empty string and a single character both come back unchanged.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 2 · Brute force first</div>
+      <button class="unfold-btn">The dumb slow way</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Make a new array. Copy the characters into it back to front. Then copy that back over the original. It works, but it uses O(n) extra space, and the problem said in place. So we know what we need to beat.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 3 · Find the waste (and the trick)</div>
+      <button class="unfold-btn">What have you used before?</button>
+      <div class="unfold"><div class="lc-body">
+        <p>You've reached for two pointers twice now. Same move here. Put <code>left</code> at the start and <code>right</code> at the end. Swap them, step both inward, and stop when they meet. The array reverses itself with no second copy.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 4 · Pseudo-code the good idea</div>
+      <button class="unfold-btn">Plain-language steps</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Pseudo-code · two pointers</div>
+        <pre>left = 0
+right = last index
+while left &lt; right:
+    swap s[left] and s[right]
+    left = left + 1
+    right = right - 1</pre>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 5 · Code it, then cost it</div>
+      <button class="unfold-btn">Show the code and the cost</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">C++</div>
+        <pre><span class="k">void</span> reverseString(<span class="k">vector</span>&lt;<span class="k">char</span>&gt;&amp; s) {
+    <span class="k">int</span> left = 0, right = s.size() - 1;
+    <span class="k">while</span> (left &lt; right) {
+        swap(s[left], s[right]);
+        left++;
+        right--;
+    }
+}</pre>
+        <p><strong>Time: O(n)</strong>, each character is touched once. <strong>Space: O(1)</strong>, just two index variables.</p>
+        <p style="color:var(--muted);font-size:15px;">Connects to: the same two-pointer wall as Move Zeroes and the Spotify shuffle. Three different problems, one pattern.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="lc">
+    <div class="lc-head"><span class="lc-tag lc-med">Easy → Medium</span><span class="lc-src">LeetCode 242 · Valid Anagram</span></div>
+    <div class="lc-statement">
+      <p>Given two lowercase strings, return true if one is an anagram of the other (same letters, same counts).</p>
+      <p class="lc-eg">Example: <code>"anagram"</code> and <code>"nagaram"</code> → true. &nbsp; <code>"rat"</code> and <code>"car"</code> → false.</p>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 1 · Understand it</div>
+      <button class="unfold-btn">Say it back in plain words</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Two words are anagrams when they contain the exact same letters the exact same number of times, ignoring order. If the lengths differ, it's an instant no. We're told the letters are lowercase a to z.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 2 · Brute force first</div>
+      <button class="unfold-btn">The dumb slow way</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Sort both words, then compare them letter by letter. If the sorted versions match, they're anagrams. It works. But sorting costs O(n log n), and we're doing more work than the question needs. We never actually cared about order.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 3 · Find the waste</div>
+      <button class="unfold-btn">What do we actually need?</button>
+      <div class="unfold"><div class="lc-body">
+        <p>We only need <strong>counts</strong>, not order. So keep an array of 26 tallies, one per letter. Add one for each letter of the first word, subtract one for each letter of the second. Use <code>c - 'a'</code> to turn a letter into its slot. If every tally is zero at the end, the letters matched exactly.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 4 · Pseudo-code the good idea</div>
+      <button class="unfold-btn">Plain-language steps</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Pseudo-code · count into 26 slots</div>
+        <pre>if lengths differ: return false
+count = 26 zeros
+for each letter c in word A: count[c - 'a'] += 1
+for each letter c in word B: count[c - 'a'] -= 1
+for each value v in count:
+    if v is not 0: return false
+return true</pre>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 5 · Code it, then cost it</div>
+      <button class="unfold-btn">Show the code and the cost</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">C++</div>
+        <pre><span class="k">bool</span> isAnagram(<span class="k">string</span> a, <span class="k">string</span> b) {
+    <span class="k">if</span> (a.size() != b.size()) <span class="k">return</span> <span class="k">false</span>;
+    <span class="k">int</span> count[26] = {0};
+    <span class="k">for</span> (<span class="k">char</span> c : a) count[c - <span class="k">'a'</span>]++;
+    <span class="k">for</span> (<span class="k">char</span> c : b) count[c - <span class="k">'a'</span>]--;
+    <span class="k">for</span> (<span class="k">int</span> v : count) <span class="k">if</span> (v != 0) <span class="k">return</span> <span class="k">false</span>;
+    <span class="k">return</span> <span class="k">true</span>;
+}</pre>
+        <p><strong>Time: O(n)</strong>, one pass per word. <strong>Space: O(1)</strong>, the count array is a fixed 26 slots no matter how long the words are.</p>
+        <p style="color:var(--muted);font-size:15px;">Connects to: turning a key into an array position with <code>c - 'a'</code> is exactly the idea behind <strong>hash maps</strong> in Arc 1. You're meeting it early, on easy mode.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="aside-me"><div class="face">🔁</div><div class="txt"><b>The loop continues</b>Same five steps, new problems. Below is your string problem set, easy first. Solve with the method, then re-solve the tricky ones in a week.</div></div>
+
+  <h3 style="margin-top:30px;font-family:var(--sans);">Your string problem set · easy first</h3>
+  <p class="dim small">Do them in order. A couple point ahead to future topics, which is the point.</p>
+  <div class="probset">
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">Valid Palindrome</span> <span class="pnote">Two pointers from both ends, skip non-letters. <b>Connects to:</b> reverse string.</span></div>
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">First Unique Character</span> <span class="pnote">Count into 26 slots, then scan in order. <b>Connects to:</b> the counting trick.</span></div>
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">Longest Common Prefix</span> <span class="pnote">Compare characters column by column across words.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Group Anagrams</span> <span class="pnote">Group words by their letter counts. <b>Foreshadows:</b> hash maps, Arc 1.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Longest Substring Without Repeating Characters</span> <span class="pnote">A window that grows and shrinks. <b>Foreshadows:</b> sliding window, Module 3.</span></div>
+  </div>
+  <p class="dim small">Solve the easy ones with the five steps before the mediums. Always finish at real C++ and a stated O() cost.</p>
+</section>
+
+<hr class="sep">
+
+<section class="wrap" id="understanding">
+  <div class="eyebrow">Your progress · measured in understanding</div>
+  <h2>The strings checklist</h2>
+  <p class="dim small">Tick a box only when you could explain that line out loud, with this page closed. Your ticks are saved on this device.</p>
+  <div class="check" id="checklist">
+    <label><input type="checkbox" data-key="isarray"><span>I can explain <strong>why a string is just an array</strong>: letters are stored as codebook numbers, laid side by side</span></label>
+    <label><input type="checkbox" data-key="inherit"><span>I can explain <strong>why every array skill carries over</strong>: O(1) access by position, cache speed, and the same shift cost in the middle</span></label>
+    <label><input type="checkbox" data-key="index"><span>I can use <strong><code>c - 'a'</code></strong> to turn a letter into a slot, and count letters in a size-26 array</span></label>
+    <label><input type="checkbox" data-key="reverse"><span>I can <strong>reverse a string in place with two pointers</strong> and explain why it's O(n) time and O(1) space</span></label>
+    <label><input type="checkbox" data-key="trap"><span>I know the <strong>concatenation-in-a-loop trap</strong> and why it can turn into O(n²)</span></label>
+    <label><input type="checkbox" data-key="solved"><span>I <strong>solved both coding problems myself</strong> in C++ before opening the steps</span></label>
+  </div>
+  <p id="check-msg" class="small dim"></p>
+</section>
+
+<section class="wrap" id="plan">
+  <div class="eyebrow">The road ahead</div>
+  <h2>What you unlocked, and what's next</h2>
+  <p>You just proved something important: a "new" topic was really an old one in a costume. That's most of DSA. Strings gave you two reusable weapons, <strong>two pointers</strong> and <strong>counting into a small array</strong>, and both show up again and again.</p>
+  <div class="week">
+    <h3><span>Next</span> Module 2 · Grids (2D arrays)</h3>
+    <ul>
+      <li>A string is one row. A photo or a game board is rows stacked into a grid.</li>
+      <li>Finding a cell by row and column is just locker maths, done twice.</li>
+      <li>You'll walk grids, and later that becomes your first taste of graphs.</li>
+    </ul>
+    <div class="goal">When you're ready, tell Claude: "Module 2: Grids".</div>
+  </div>
+  <p class="dim small" style="margin-top:20px;">Finish the checklist above first. Then take the two-pointer and counting patterns with you. You'll be surprised how far they stretch.</p>
+</section>
+
+<footer>
+  First principles · Module 1 of the why-first DSA course · strings are arrays wearing letters
+</footer>
+
+</div>
+</div>
+
+<script src="../assets/module1.js"></script>
+</body>
+</html>

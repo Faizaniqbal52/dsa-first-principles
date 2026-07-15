@@ -18,10 +18,12 @@ Each module is its own page, so no single file gets overwhelming:
 index.html              the course map (home)
 modules/
   module-0.html         Module 0: how a computer remembers (arrays)
+  module-1.html         Module 1: strings
 assets/
   base.css              shared styles for every page
   map.js                renders the course map + progress
   module0.js            Module 0 interactivity
+  module1.js            Module 1 interactivity
 ```
 
 New modules are added as `modules/module-N.html` reusing `assets/base.css`, with
@@ -60,8 +62,9 @@ ones you already know, so the whole subject stays one connected story.
   manipulation, string algorithms
 - **Arc 7 · The arena**: mixed, timed, interview-style scenarios
 
-**Module 0 (memory & arrays) is fully built.** The rest are on the map and get
-built at full depth as the learner arrives at each one.
+**Modules 0 (memory & arrays) and 1 (strings) are fully built.** The rest are on
+the map and get built at full depth as the learner arrives at each one. Coding
+solutions are written in C++.
 
 ## Built with
 

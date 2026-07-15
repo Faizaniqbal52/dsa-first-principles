@@ -4,9 +4,9 @@
   /* ---------- course map data ---------- */
   var arcs = [
     { tag: 'Arc 0 · Week 1', name: 'Foundations', sub: 'How a computer remembers, and the first structure ever invented.', mods: [
-      { n: 'Module 0', t: 'How a computer remembers', born: 'You can\'t ask 10,000 named boxes for "number n". Memory, variables, arrays, O(1) vs O(n), cache.', st: 'live' },
-      { n: 'Module 1', t: 'Strings', born: 'Text is just an array of characters, so every array trick suddenly works on words.', st: 'next' },
-      { n: 'Module 2', t: 'Grids (2D arrays)', born: 'Photos, game boards and marksheets are rows of rows. Locker maths, done twice.', st: 'lock' },
+      { n: 'Module 0', t: 'How a computer remembers', born: 'You can\'t ask 10,000 named boxes for "number n". Memory, variables, arrays, O(1) vs O(n), cache.', st: 'live', href: 'modules/module-0.html', checkKey: 'fp-arrays-check', totalKey: 'fp-arrays-total', defTotal: 9 },
+      { n: 'Module 1', t: 'Strings', born: 'Text is just an array of characters, so every array trick suddenly works on words.', st: 'live', href: 'modules/module-1.html', checkKey: 'fp-strings-check', totalKey: 'fp-strings-total', defTotal: 6 },
+      { n: 'Module 2', t: 'Grids (2D arrays)', born: 'Photos, game boards and marksheets are rows of rows. Locker maths, done twice.', st: 'next' },
       { n: 'Module 3', t: 'Two pointers & sliding window', born: 'Scanning an array twice is often once too many. Two techniques born inside arrays.', st: 'lock' }
     ]},
     { tag: 'Arc 1 · Week 2', name: 'Patches for the array\'s pains', sub: 'Each structure here fixes one exact array weakness you watched break.', mods: [
@@ -48,6 +48,17 @@
     ]}
   ];
 
+  /* ---------- read a module's saved progress ---------- */
+  function readProg(m) {
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(m.checkKey) || '{}'); } catch (e) {}
+    var total = parseInt(localStorage.getItem(m.totalKey) || String(m.defTotal || 0), 10) || (m.defTotal || 0);
+    var done = 0;
+    Object.keys(saved).forEach(function (k) { if (saved[k]) done++; });
+    if (done > total) done = total;
+    return { done: done, total: total };
+  }
+
   function renderMap() {
     var el = $('arcs');
     el.innerHTML = arcs.map(function (a) {
@@ -57,8 +68,15 @@
           var chip = m.st === 'live' ? '<span class="st st-live">Live now</span>' :
                      m.st === 'next' ? '<span class="st st-next">Next up</span>' :
                      '<span class="st st-lock">Built when you arrive</span>';
-          var enter = m.st === 'live' ? '<button class="enter" data-href="modules/module-0.html">Enter module \u2192</button>' :
-                      m.st === 'next' ? '<div class="born" style="margin-top:10px;"><b>To unlock</b>Finish Module 0\'s checklist, then tell Claude: "' + m.n + ': ' + m.t + '"</div>' : '';
+          var enter = '';
+          if (m.st === 'live') {
+            var pr = readProg(m);
+            var prog = pr.total ? '<div class="mprog"><span class="mprog-bar"><span style="width:' +
+              Math.round(pr.done / pr.total * 100) + '%"></span></span>' + pr.done + '/' + pr.total + '</div>' : '';
+            enter = prog + '<button class="enter" data-href="' + m.href + '">Enter module \u2192</button>';
+          } else if (m.st === 'next') {
+            enter = '<div class="born" style="margin-top:10px;"><b>Coming next</b>Tell Claude: "' + m.n + ': ' + m.t + '" when you\'re ready.</div>';
+          }
           return '<div class="mod ' + m.st + '"><div class="mnum">' + m.n + '</div><h3>' + m.t + '</h3>' +
             '<div class="born"><b>Born because</b>' + m.born + '</div>' + chip + enter + '</div>';
         }).join('') + '</div></div>';
@@ -68,15 +86,17 @@
     });
   }
 
-  /* ---------- progress + checkpoints, read from saved module state ---------- */
+  /* ---------- overall progress across every live module ---------- */
   function updateStats() {
-    var saved = {};
-    try { saved = JSON.parse(localStorage.getItem('fp-arrays-check') || '{}'); } catch (e) {}
-    var total = parseInt(localStorage.getItem('fp-arrays-total') || '9', 10);
-    var done = 0;
-    Object.keys(saved).forEach(function (k) { if (saved[k]) done++; });
-    if (done > total) done = total;
+    var done = 0, total = 0, live = 0;
+    arcs.forEach(function (a) {
+      a.mods.forEach(function (m) {
+        if (m.st === 'live') live++;
+        if (m.checkKey) { var p = readProg(m); done += p.done; total += p.total; }
+      });
+    });
     var pct = total ? Math.round(done / total * 100) : 0;
+    if ($('ms-live')) $('ms-live').textContent = live;
     if ($('ms-checks')) $('ms-checks').textContent = done + '/' + total;
     if ($('progress-fill')) $('progress-fill').style.width = pct + '%';
     if ($('progress-num')) $('progress-num').textContent = pct + '%';
