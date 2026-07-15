@@ -7,10 +7,10 @@
       { n: 'Module 0', t: 'How a computer remembers', born: 'You can\'t ask 10,000 named boxes for "number n". Memory, variables, arrays, O(1) vs O(n), cache.', st: 'live', href: 'modules/module-0.html', checkKey: 'fp-arrays-check', totalKey: 'fp-arrays-total', defTotal: 9 },
       { n: 'Module 1', t: 'Strings', born: 'Text is just an array of characters, so every array trick suddenly works on words.', st: 'live', href: 'modules/module-1.html', checkKey: 'fp-strings-check', totalKey: 'fp-strings-total', defTotal: 6 },
       { n: 'Module 2', t: 'Grids (2D arrays)', born: 'Photos, game boards and marksheets are rows of rows. Locker maths, done twice.', st: 'live', href: 'modules/module-2.html', checkKey: 'fp-grids-check', totalKey: 'fp-grids-total', defTotal: 7 },
-      { n: 'Module 3', t: 'Two pointers & sliding window', born: 'Scanning an array twice is often once too many. Two techniques born inside arrays.', st: 'next' }
+      { n: 'Module 3', t: 'Two pointers & sliding window', born: 'Scanning an array twice is often once too many. Two techniques born inside arrays.', st: 'live', href: 'modules/module-3.html', checkKey: 'fp-twoptr-check', totalKey: 'fp-twoptr-total', defTotal: 7 }
     ]},
     { tag: 'Arc 1 · Week 2', name: 'Patches for the array\'s pains', sub: 'Each structure here fixes one exact array weakness you watched break.', mods: [
-      { n: 'Module 4', t: 'Linked lists', born: 'Inserting at the front shifted 10 million values. What if each value simply held the address of the next?', st: 'lock' },
+      { n: 'Module 4', t: 'Linked lists', born: 'Inserting at the front shifted 10 million values. What if each value simply held the address of the next?', st: 'next' },
       { n: 'Module 5', t: 'Stacks', born: 'Undo, the back button, and function calls only ever touch the newest thing. A rule that makes life easier.', st: 'lock' },
       { n: 'Module 6', t: 'Queues', born: 'Waiting lines want the oldest first, but removing from an array\'s front hurts. There\'s a circular trick.', st: 'lock' },
       { n: 'Module 7', t: 'Hash maps & sets', born: '"Which student scored 97?" forced a full search. A genius trick turns the VALUE itself into a locker number.', st: 'lock' }
