@@ -1,0 +1,5 @@
+# Large local media — not part of the course
+*.mp4
+
+# Local editor / tool settings
+.claude/settings.local.json
