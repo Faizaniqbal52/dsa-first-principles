@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 2 · Grids (2D arrays) · First principles</title>
+<link rel="stylesheet" href="../assets/base.css">
+</head>
+<body>
+
+<nav class="rail" aria-label="Module navigation">
+  <div class="rail-inner">
+    <span class="rail-name">First principles · DSA</span>
+    <div class="rail-links">
+      <a href="../index.html" style="font-weight:600;">⌂ Course map</a>
+      <a href="#start">Start</a>
+      <a href="#story">Story</a>
+      <a href="#invention">Grids</a>
+      <a href="#inside">Inside</a>
+      <a href="#breaks">Breaks</a>
+      <a href="#real">Daily life</a>
+      <a href="#problems">Practice</a>
+      <a href="#code">Code it</a>
+      <a href="#plan">Next</a>
+    </div>
+    <div class="rail-progress" title="Your progress in this module">
+      <div class="rail-bar"><span id="progress-fill"></span></div>
+      <span id="progress-num">0%</span>
+    </div>
+  </div>
+</nav>
+
+<div id="view-m2">
+<header class="hero wrap" id="start">
+  <div class="stepline"><span class="dot">1</span> Start from what you know <span class="rest">· Module 2</span></div>
+  <h1>Grids: locker maths, done twice</h1>
+  <p class="big">A string was one row. But photos, game boards and spreadsheets are rows stacked into a table. The catch: memory is a single straight line. This module is about the little trick that folds a 2D table into that 1D line.</p>
+
+  <div class="aside-me"><div class="face">👋</div><div class="txt"><b>Before we start</b>You'll lean on one idea from Module 0: a value's position is found by a small sum. Grids just do that sum twice. If arrays clicked, this is a short hop.</div></div>
+
+  <div class="word"><b>Quick recap · The array formula</b>
+  To find item <code>i</code> in an array that starts at locker <code>base</code>, the computer works out <code>base + i</code>. One small sum, any position, O(1).</div>
+
+  <p>Keep that sum in mind. We're about to need it in two directions at once.</p>
+  <p style="margin-top:10px;"><a href="#story" style="color:var(--accent);font-family:var(--sans);font-size:15px;">Here comes the problem ↓</a></p>
+</header>
+
+<section class="wrap" id="story">
+  <div class="stepline"><span class="dot">2</span> The story <span class="rest">· why grids exist</span></div>
+  <h2>Memory is a straight line. A table is not.</h2>
+  <p>Every locker sits in one long hallway, numbered 0, 1, 2, 3, on and on. There is no "up" or "down" in memory. It's a single line.</p>
+  <p class="big">Now the school wants a full <strong>marksheet</strong>: 30 students down the side, 5 subjects across the top. A table. Rows <em>and</em> columns.</p>
+  <p class="dim small">But you only have a straight line of lockers. How do you fit a 2D table into a 1D line? Pick whatever feels natural.</p>
+
+  <div class="chips" id="ch2-choices">
+    <button data-choice="a">Keep each row as its own array, and hold a list of those rows</button>
+    <button data-choice="b">Lay all the rows end to end in one long line, and use maths to find any cell</button>
+    <button data-choice="c">Honestly, no idea</button>
+  </div>
+
+  <div class="reveal" id="ch2-r-a">
+    <div class="response"><span class="who">Good instinct</span>That's the "array of arrays" idea, and it's real. In C++ it's <code>vector&lt;vector&lt;int&gt;&gt;</code>. But here's the twist: each of those rows is still a 1D array in a 1D memory. So underneath, the rows still have to sit somewhere on the straight line. Which leads straight to the other answer.</div>
+  </div>
+  <div class="reveal" id="ch2-r-b">
+    <div class="response"><span class="who">That's the physical truth</span>Exactly how it works underneath. Put row 0 first, then row 1 right after it, then row 2, all in one line. To reach any cell, you do a small sum. That layout is called row-major order.</div>
+  </div>
+  <div class="reveal" id="ch2-r-c">
+    <div class="response"><span class="who">Honest answer</span>No problem. The trick is to give up on "up and down" entirely. Lay the rows one after another in the single line, then use a sum to find any cell. Let's see it.</div>
+  </div>
+
+  <div class="reveal" id="ch2-vars">
+    <p style="margin-top:22px;">Say the grid has <strong>5 columns</strong>. You store row 0 in the first 5 lockers, row 1 in the next 5, and so on:</p>
+    <div class="machine">
+      <div class="label">One table · folded into one line · row by row</div>
+      <div class="formula">row 0 → lockers 0, 1, 2, 3, 4<br>
+row 1 → lockers 5, 6, 7, 8, 9<br>
+row 2 → lockers 10, 11, 12, 13, 14<br>
+…<br>
+cell (row <b>r</b>, col <b>c</b>) → locker <b>r × 5 + c</b></div>
+      <div class="mnote">To skip past <b>r</b> whole rows you skip <b>r × 5</b> lockers (5 per row), then step <b>c</b> more to reach the column. That's the whole idea: <b>r × cols + c</b>.</div>
+    </div>
+    <p class="big" style="margin-top:22px;">A grid is just a 1D array with a two-part address: <strong>r × cols + c</strong>.</p>
+    <p>Look familiar? It's the array sum from Module 0, done twice: once to pick the row, once to pick the column. You already had this tool.</p>
+    <button class="primary" id="ch2-continue">Show me the invention →</button>
+  </div>
+  <p style="margin-top:26px;"><button class="skip" id="skip-story">I get it already, skip ahead</button></p>
+</section>
+
+<div class="reveal" id="rest">
+
+<section class="wrap" id="invention">
+  <div class="stepline"><span class="dot">3</span> The idea <span class="rest">· the two-part address</span></div>
+  <h2>One formula runs the whole module: r × cols + c</h2>
+  <p>Here's Module 2 in a single line: <strong>a 2D grid is a 1D array, and the address of cell (r, c) is r × cols + c.</strong></p>
+  <div class="word"><b>New word · Grid (2D array)</b>
+  A table of values with rows and columns. Physically it's one flat array, stored row by row. In C++ you usually write it as <code>vector&lt;vector&lt;int&gt;&gt;</code> and reach a cell with <code>grid[r][c]</code>.</div>
+  <div class="word"><b>New words · Row-major order</b>
+  Storing a grid one full row after another in memory. C and C++ use row-major. It's why the address is <code>r × cols + c</code>: each row is <code>cols</code> lockers wide.</div>
+
+  <div class="cp" data-cp="cp1" data-answer="c">
+    <div class="cp-tag">Quick check</div>
+    <div class="cp-q">A grid has 5 columns. What flat locker holds cell (row 2, col 3)?</div>
+    <div class="cp-opts">
+      <button data-opt="a">Locker 5, because 2 + 3 = 5</button>
+      <button data-opt="b">Locker 23, just read the numbers together</button>
+      <button data-opt="c">Locker 13, because 2 × 5 + 3 = 13</button>
+    </div>
+    <div class="cp-fb"><b>Nailed it</b>Skip 2 whole rows (2 × 5 = 10 lockers), then step 3 more columns. 10 + 3 = 13. That is the entire trick of grids.</div>
+    <div class="cp-nudge">Not quite. To get past 2 full rows you skip 2 × cols lockers first, then add the column. Try the sum again.</div>
+  </div>
+
+  <div class="aside-me"><div class="face">🎁</div><div class="txt"><b>The free gift, again</b>Because a grid is a flat array underneath, the O(1) jump comes along: any cell in one sum, no searching. And nesting keeps working. A colour photo is a grid of pixels, and each pixel is itself three numbers (red, green, blue). Grids inside grids, sums inside sums.</div></div>
+</section>
+
+<section class="wide" id="inside">
+  <div class="wrap" style="padding:0;">
+    <div class="stepline"><span class="dot">4</span> Look inside <span class="rest">· watch the table fold into a line</span></div>
+    <h2>Click a cell, see its flat locker</h2>
+    <p>Below is a 4-by-5 grid. Each cell already shows its flat locker number. Click any cell and watch the same position light up in the single memory line underneath. Then try lighting a whole row versus a whole column.</p>
+  </div>
+  <div class="machine">
+    <div class="label">Grid → memory · 4 rows × 5 columns · click any cell</div>
+    <div class="gridwrap">
+      <div>
+        <div class="lbl">The grid (what you see)</div>
+        <div class="grid2d" id="grid-cells"></div>
+      </div>
+    </div>
+    <div class="formula" id="grid-formula" style="margin-top:18px;">Click a cell to see its address: <b>r × 5 + c</b>.</div>
+    <div class="lbl" style="margin-top:14px;color:var(--machine-dim);font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:0.1em;">The real memory (one straight line)</div>
+    <div class="cells-outer"><div class="cells" id="flat-cells"></div></div>
+    <div class="mrow">
+      <button id="btn-lightrow" disabled>Light the whole row</button>
+      <button id="btn-lightcol" disabled>Light the whole column</button>
+    </div>
+    <div class="mnote" id="grid-note">Notice this when you try it: a whole <b>row</b> is a solid run of neighbours in memory, but a whole <b>column</b> is scattered, one cell every 5 lockers.</div>
+  </div>
+  <div class="wrap" style="padding:0;">
+    <div class="word"><b>Why the column is scattered</b>
+    Cells in a row sit next to each other (positions 5, 6, 7, 8, 9). Cells in a column are a full row apart (positions 3, 8, 13, 18). That gap is exactly <code>cols</code>, and it's about to matter for speed.</div>
+  </div>
+</section>
+
+<section class="wrap" id="whys">
+  <div class="stepline"><span class="dot">✦</span> Bonus <span class="rest">· go deeper, optional</span></div>
+  <h2>Still curious? Keep asking why</h2>
+  <p class="dim small">Optional. Press <em>why?</em> to open each reason. Skip and return whenever.</p>
+
+  <div class="claim">
+    <div class="head">Walking a row is fast. Walking a column is slow.<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>Remember the cache from Module 0? Reading one locker photocopies its whole shelf of neighbours for free. A row's cells are neighbours, so scanning a row rides that free ride. A column's cells are <code>cols</code> lockers apart, so every step lands on a different shelf and pays the long trip again. Same data, same loop, but row-order can be many times faster.</p>
+      <div class="head small">So should I always loop rows first, then columns?<button class="why-btn">why?</button></div>
+      <div class="why-panel">
+        <p>In a row-major language like C++, yes: put the row loop on the outside and the column loop on the inside, so you move along memory in order. It's a free speed-up you get just by ordering two loops correctly.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="head">The address is <code>r × cols + c</code>, not <code>r × rows + c</code>.<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>You're skipping <em>rows</em>, and each row is <code>cols</code> lockers wide. To jump past 2 rows in a 5-column grid you skip 2 × 5 lockers, not 2 × (number of rows). The multiplier is always the width of a row, which is the column count.</p>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="head">A colour photo is a grid where each cell is three numbers.<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>Each pixel needs a red, a green, and a blue value (0 to 255 each). So an image is really a grid of pixels, and each pixel is a tiny array of 3. The address maths just nests one more level: find the pixel with <code>r × cols + c</code>, then step to the colour you want. This is exactly how image filters and every photo app work under the hood.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wide" id="breaks">
+  <div class="wrap" style="padding:0;">
+    <div class="stepline"><span class="dot">5</span> Where it hurts <span class="rest">· the grid costs</span></div>
+    <h2>Grids inherit array pain, and add a direction tax</h2>
+    <p>A grid is a flat array, so it carries every array weakness. Then the second dimension adds costs of its own.</p>
+  </div>
+  <div class="wrap" style="padding:0;">
+    <div class="cards">
+      <div class="rcard"><h3>Wrong-direction loops</h3><span class="dim">Scanning column by column in a row-major grid fights the cache. The exact same work can run several times slower purely because of loop order.</span></div>
+      <div class="rcard"><h3>Adding a row or column</h3><span class="dim">Growing a grid means finding a bigger block and copying everything across, just like an array outgrowing its row. O(rows × cols).</span></div>
+      <div class="rcard"><h3>Mostly-empty grids waste space</h3><span class="dim">A 10,000 × 10,000 grid with a handful of real values still reserves 100 million lockers. Sparse data needs a smarter structure later.</span></div>
+      <div class="rcard"><h3>Off-by-one at the edges</h3><span class="dim">Looking at a cell's neighbours means checking you didn't fall off row 0, the last row, or either side. Forgetting an edge check is the most common grid bug.</span></div>
+    </div>
+    <div class="cp" data-cp="cp2" data-answer="b">
+      <div class="cp-tag">Quick check</div>
+      <div class="cp-q">Two loops sum a big grid. One goes row-by-row, the other column-by-column. Same answer. Why can the column version be much slower?</div>
+      <div class="cp-opts">
+        <button data-opt="a">It isn't, loop order never matters</button>
+        <button data-opt="b">Column cells are far apart in memory, so each step misses the cache and pays the long trip</button>
+        <button data-opt="c">Columns have more numbers than rows</button>
+      </div>
+      <div class="cp-fb"><b>Exactly</b>Row cells are neighbours and ride the free cache shelf. Column cells are <code>cols</code> lockers apart, so nearly every read is a fresh long trip to memory. Same maths, very different speed.</div>
+      <div class="cp-nudge">Think back to the cache from Module 0: reading one locker brings its neighbours for free. Which direction keeps you among neighbours? Try again.</div>
+    </div>
+    <div class="aside-me"><div class="face">🔑</div><div class="txt"><b>Same bones</b>Grid access is O(1), a grid scan is O(rows × cols), growing is O(rows × cols), and the cache still rules. Nothing here is new. It's the array, wearing a second dimension.</div></div>
+  </div>
+</section>
+
+<section class="wrap" id="real">
+  <div class="stepline"><span class="dot">6</span> Daily life <span class="rest">· grids are everywhere</span></div>
+  <h2>Where grids hide in your day</h2>
+  <div class="cards">
+    <div class="rcard"><h3>Every screen and photo</h3><span class="dim">Your display is a grid of pixels. A photo is a grid of colours. Cropping, rotating and filters are all grid maths.</span></div>
+    <div class="rcard"><h3>Game boards</h3><span class="dim">Chess, tic-tac-toe, Minesweeper, Tetris. All grids, checked cell by cell and neighbour by neighbour.</span></div>
+    <div class="rcard"><h3>Spreadsheets</h3><span class="dim">Rows and columns, and "cell C42" is just row 41, column 2. Locker maths, twice.</span></div>
+    <div class="rcard"><h3>Maps and tiles</h3><span class="dim">Map apps break the world into a grid of square tiles and load the ones you can see.</span></div>
+    <div class="rcard"><h3>AI and matrices</h3><span class="dim">Neural networks are stacks of grids (matrices) of numbers, multiplied together billions of times.</span></div>
+    <div class="rcard"><h3>Excel heatmaps and tables</h3><span class="dim">Any table of data you've ever sorted or coloured is a grid underneath.</span></div>
+  </div>
+
+  <div class="next-card">
+    <h3>Coming next: scanning smarter</h3>
+    You've now seen "two pointers" and "count into a small array" show up again and again. Module 3 makes them official: <strong>two pointers and the sliding window</strong>, two techniques for scanning a row without wasting passes. After that, grids come back in disguise as your first graphs.
+  </div>
+</section>
+
+<section class="wrap" id="problems">
+  <div class="stepline"><span class="dot">7</span> Practice <span class="rest">· think first</span></div>
+  <h2>Spot the grid pattern</h2>
+  <p class="dim small">Three real situations. Hints are questions, not answers. Try each in your head first. Watch how often the answer is "walk the grid with two nested loops and get the index maths right".</p>
+
+  <div class="problem" id="p1">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 1 · warm-up</div>
+    <div class="scenario">A photo tool needs a "flip along the diagonal" button (swap rows and columns). The pixel at row r, column c should end up at row c, column r. This is a transpose.</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p1">
+        <div class="hint"><b>Hint 1 · what is the data?</b>A grid of pixels. What two things identify one pixel, and what should swap between them?</div>
+        <div class="hint"><b>Hint 2 · the move</b>If the value at (r, c) must go to (c, r), what does the output cell (c, r) simply copy from?</div>
+        <div class="hint"><b>Hint 3 · how do you visit every cell?</b>What pair of loops walks every (r, c) in the grid exactly once?</div>
+      </div>
+      <button data-next-hint="p1">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p1-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p1-d">
+        <p style="margin-top:12px;">Walk every cell with two nested loops and copy: <code>out[c][r] = in[r][c]</code>. That's it. Cost is O(rows × cols) because you touch each cell once, and you can't do better since every value has to move. <strong>Transpose is the grid version of "just visit everything and place it where it belongs".</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="problem" id="p2">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 2 · the edges</div>
+    <div class="scenario">In Minesweeper, each square shows how many of its 8 surrounding squares hold a mine. You must count a cell's mine-neighbours without crashing when the cell sits on an edge or corner.</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p2">
+        <div class="hint"><b>Hint 1 · what are the neighbours?</b>For a cell at (r, c), what are the row and column offsets of its 8 neighbours? (Think -1, 0, +1 in each direction.)</div>
+        <div class="hint"><b>Hint 2 · the danger</b>A corner cell has only 3 real neighbours. What goes wrong if you blindly read (r-1, c-1) at row 0?</div>
+        <div class="hint"><b>Hint 3 · the guard</b>Before reading a neighbour, what must you check about its row and column?</div>
+        <div class="hint"><b>Hint 4 · tidy it</b>Could you loop the offsets -1, 0, +1 for both directions, skip the (0,0) that means "yourself", and check bounds each time?</div>
+      </div>
+      <button data-next-hint="p2">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p2-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p2-d">
+        <p style="margin-top:12px;">Loop the row offset and column offset each over -1, 0, +1. Skip the (0, 0) case (that's the cell itself). For every other offset, first check the neighbour's row is between 0 and rows-1 and its column is between 0 and cols-1, then count it if it's a mine. <strong>The bounds check is the whole problem. Grids live and die at their edges.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="problem" id="p3">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 3 · direction and speed</div>
+    <div class="scenario">A data tool sums every number in a giant grid. It's correct but slow. A colleague swears they made it 5 times faster without changing the maths at all. How?</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p3">
+        <div class="hint"><b>Hint 1 · what could change if not the maths?</b>If the answer is identical, what about <em>how</em> the cells are visited could differ?</div>
+        <div class="hint"><b>Hint 2 · recall the cache</b>Which order keeps you reading neighbouring lockers: row on the outside and column inside, or the reverse?</div>
+        <div class="hint"><b>Hint 3 · the fix</b>The slow version loops columns on the outside. What one swap makes every read land among neighbours?</div>
+      </div>
+      <button data-next-hint="p3">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p3-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p3-d">
+        <p style="margin-top:12px;">Same maths, different order. The slow loop walked column by column, so every read jumped <code>cols</code> lockers and missed the cache. Put the row loop on the outside and the column loop on the inside, and now you slide along memory in order, riding the free cache shelf. <strong>No new algorithm, just loops in the friendly order.</strong> This is one of the easiest real speed-ups you'll ever ship.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="code">
+  <div class="stepline"><span class="dot">8</span> Now code it <span class="rest">· C++, interview-style</span></div>
+  <h2>Two grid problems, same five-step method</h2>
+  <p>Same method as always: understand, brute force, find the waste, pseudo-code, then code and cost. The second problem reuses both transpose and the reverse you learned on strings.</p>
+  <p class="dim small">Try each yourself first. Open a step only after a real attempt.</p>
+
+  <div class="lc">
+    <div class="lc-head"><span class="lc-tag lc-easy">Easy · warm-up</span><span class="lc-src">LeetCode 867 · Transpose Matrix</span></div>
+    <div class="lc-statement">
+      <p>Return the transpose of a grid: flip it along its main diagonal so rows become columns.</p>
+      <p class="lc-eg">Example: <code>[[1,2,3],[4,5,6]]</code> becomes <code>[[1,4],[2,5],[3,6]]</code></p>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 1 · Understand it</div>
+      <button class="unfold-btn">Say it back in plain words</button>
+      <div class="unfold"><div class="lc-body">
+        <p>The value at row r, column c moves to row c, column r. If the input is R rows by C columns, the output is C rows by R columns. Edge case worth noting: the grid need not be square, so the output's shape is the input's shape flipped.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 2 · Brute force first</div>
+      <button class="unfold-btn">The straightforward way</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Make a fresh grid with the flipped shape (C rows, R columns). Walk every cell of the input with two nested loops and drop each value into its swapped spot. There's honestly no slower "brute force" here, because every value has to move exactly once. The only real question is getting the shape and indices right.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 3 · Find the shape (the only trap)</div>
+      <button class="unfold-btn">Where do people slip?</button>
+      <div class="unfold"><div class="lc-body">
+        <p>The single mistake is sizing the output. It is <strong>C rows by R columns</strong>, not R by C. Get that backwards and you index out of bounds the moment the grid isn't square. Size it right and the copy is trivial: <code>out[c][r] = in[r][c]</code>.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 4 · Pseudo-code it</div>
+      <button class="unfold-btn">Plain-language steps</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Pseudo-code · visit and place</div>
+        <pre>R = number of rows, C = number of columns
+make out with C rows and R columns
+for r from 0 to R-1:
+    for c from 0 to C-1:
+        out[c][r] = in[r][c]
+return out</pre>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 5 · Code it, then cost it</div>
+      <button class="unfold-btn">Show the code and the cost</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">C++</div>
+        <pre><span class="k">vector</span>&lt;<span class="k">vector</span>&lt;<span class="k">int</span>&gt;&gt; transpose(<span class="k">vector</span>&lt;<span class="k">vector</span>&lt;<span class="k">int</span>&gt;&gt;&amp; m) {
+    <span class="k">int</span> R = m.size(), C = m[0].size();
+    <span class="k">vector</span>&lt;<span class="k">vector</span>&lt;<span class="k">int</span>&gt;&gt; out(C, <span class="k">vector</span>&lt;<span class="k">int</span>&gt;(R));
+    <span class="k">for</span> (<span class="k">int</span> r = 0; r &lt; R; r++)
+        <span class="k">for</span> (<span class="k">int</span> c = 0; c &lt; C; c++)
+            out[c][r] = m[r][c];
+    <span class="k">return</span> out;
+}</pre>
+        <p><strong>Time: O(R × C)</strong>, every cell touched once. <strong>Space: O(R × C)</strong> for the output grid.</p>
+        <p style="color:var(--muted);font-size:15px;">Connects to: this "visit every cell with two nested loops" is the backbone of almost every grid problem you'll ever solve.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="lc">
+    <div class="lc-head"><span class="lc-tag lc-med">Medium</span><span class="lc-src">LeetCode 48 · Rotate Image</span></div>
+    <div class="lc-statement">
+      <p>Rotate a square grid 90 degrees clockwise, <strong>in place</strong> (no second grid).</p>
+      <p class="lc-eg">Example: <code>[[1,2,3],[4,5,6],[7,8,9]]</code> becomes <code>[[7,4,1],[8,5,2],[9,6,3]]</code></p>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 1 · Understand it</div>
+      <button class="unfold-btn">Say it back in plain words</button>
+      <div class="unfold"><div class="lc-body">
+        <p>The top row becomes the right column, the right column becomes the bottom row, and so on. The grid is square (n by n), and we may not use a second grid. So we have to rearrange the values we already have.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 2 · Brute force first</div>
+      <button class="unfold-btn">The easy-but-banned way</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Make a new grid and place each value where a 90-degree rotation sends it: <code>out[c][n-1-r] = in[r][c]</code>. It works and it's easy to reason about. But it uses a whole second grid, and the problem said in place. So we need the same result without the extra space.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 3 · Find the waste (two moves you already know)</div>
+      <button class="unfold-btn">Combine two old tricks</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Here's the elegant part. A clockwise rotation is exactly <strong>transpose, then reverse each row</strong>. You already know both. Transpose flips across the diagonal (swap (r,c) with (c,r)), which you can do in place. Then reversing each row (two pointers, from Module 1) finishes the rotation. Two familiar moves, no second grid.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 4 · Pseudo-code it</div>
+      <button class="unfold-btn">Plain-language steps</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Pseudo-code · transpose, then reverse rows</div>
+        <pre>n = size of the grid
+// transpose in place: swap across the diagonal
+for r from 0 to n-1:
+    for c from r+1 to n-1:
+        swap grid[r][c] and grid[c][r]
+// reverse each row
+for r from 0 to n-1:
+    reverse grid[r]</pre>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 5 · Code it, then cost it</div>
+      <button class="unfold-btn">Show the code and the cost</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">C++</div>
+        <pre><span class="k">void</span> rotate(<span class="k">vector</span>&lt;<span class="k">vector</span>&lt;<span class="k">int</span>&gt;&gt;&amp; m) {
+    <span class="k">int</span> n = m.size();
+    <span class="k">for</span> (<span class="k">int</span> r = 0; r &lt; n; r++)
+        <span class="k">for</span> (<span class="k">int</span> c = r + 1; c &lt; n; c++)
+            swap(m[r][c], m[c][r]);      <span class="c">// transpose</span>
+    <span class="k">for</span> (<span class="k">int</span> r = 0; r &lt; n; r++)
+        reverse(m[r].begin(), m[r].end());  <span class="c">// reverse each row</span>
+}</pre>
+        <p><strong>Time: O(n²)</strong>, each cell is touched a constant number of times. <strong>Space: O(1)</strong>, all swaps happen inside the grid.</p>
+        <p style="color:var(--muted);font-size:15px;">Connects to: transpose (problem 1) plus reverse-with-two-pointers (Module 1). A "hard" problem dissolves into two easy ones you already owned.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="aside-me"><div class="face">🔁</div><div class="txt"><b>The loop continues</b>Same five steps, new shapes. Below is your grid problem set, easy first. Solve with the method, then re-solve the tricky ones in a week.</div></div>
+
+  <h3 style="margin-top:30px;font-family:var(--sans);">Your grid problem set · easy first</h3>
+  <p class="dim small">Do them in order. The last two point straight at the next arcs.</p>
+  <div class="probset">
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">Flood Fill</span> <span class="pnote">Paint a region from a starting cell. <b>Foreshadows:</b> DFS and graphs, Arc 4.</span></div>
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">Matrix Diagonal Sum</span> <span class="pnote">Add the two diagonals with careful indexing.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Set Matrix Zeroes</span> <span class="pnote">If a cell is 0, zero its whole row and column. Watch the order of writes.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Spiral Matrix</span> <span class="pnote">Peel the grid in a spiral. Four moving boundaries.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Number of Islands</span> <span class="pnote">Count connected regions. <b>Foreshadows:</b> graph traversal, Arc 4.</span></div>
+  </div>
+  <p class="dim small">Solve the easy ones with the five steps before the mediums. Always finish at real C++ and a stated O() cost.</p>
+</section>
+
+<hr class="sep">
+
+<section class="wrap" id="understanding">
+  <div class="eyebrow">Your progress · measured in understanding</div>
+  <h2>The grids checklist</h2>
+  <p class="dim small">Tick a box only when you could explain that line out loud, with this page closed. Your ticks are saved on this device.</p>
+  <div class="check" id="checklist">
+    <label><input type="checkbox" data-key="fold"><span>I can explain <strong>why a 2D grid lives in 1D memory</strong>, stored one full row after another</span></label>
+    <label><input type="checkbox" data-key="formula"><span>I can compute a cell's flat address with <strong><code>r × cols + c</code></strong>, and explain why the multiplier is the column count</span></label>
+    <label><input type="checkbox" data-key="cache"><span>I can explain <strong>why walking a row is cache-fast but walking a column is slow</strong></span></label>
+    <label><input type="checkbox" data-key="transpose"><span>I can <strong>transpose a grid</strong> with two nested loops and state its O(rows × cols) cost</span></label>
+    <label><input type="checkbox" data-key="rotate"><span>I can <strong>rotate a square grid in place</strong> by transposing then reversing each row</span></label>
+    <label><input type="checkbox" data-key="edges"><span>I can safely <strong>check a cell's neighbours</strong> with bounds checks at the grid's edges</span></label>
+    <label><input type="checkbox" data-key="solved"><span>I <strong>solved both coding problems myself</strong> in C++ before opening the steps</span></label>
+  </div>
+  <p id="check-msg" class="small dim"></p>
+</section>
+
+<section class="wrap" id="plan">
+  <div class="eyebrow">The road ahead</div>
+  <h2>What you unlocked, and what's next</h2>
+  <p>Three modules in, you've seen the same handful of moves keep returning: the address sum, two pointers, counting into a small array, and the cache. That's the whole secret. New topics are old moves in new shapes.</p>
+  <div class="week">
+    <h3><span>Next</span> Module 3 · Two pointers & sliding window</h3>
+    <ul>
+      <li>You've used two pointers three times now. Time to make it a deliberate tool.</li>
+      <li>The sliding window: scan a row once instead of re-scanning ranges over and over.</li>
+      <li>These two techniques quietly power a huge slice of easy and medium interview questions.</li>
+    </ul>
+    <div class="goal">When you're ready, tell Claude: "Module 3: Two pointers and sliding window".</div>
+  </div>
+  <p class="dim small" style="margin-top:20px;">Finish the checklist above first. Then carry the address sum and the cache rule forward. Grids will return as graphs before long.</p>
+</section>
+
+<footer>
+  First principles · Module 2 of the why-first DSA course · a grid is an array with a second dimension
+</footer>
+
+</div>
+</div>
+
+<script src="../assets/module2.js"></script>
+</body>
+</html>

@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 3 · Two pointers & sliding window · First principles</title>
+<link rel="stylesheet" href="../assets/base.css">
+</head>
+<body>
+
+<nav class="rail" aria-label="Module navigation">
+  <div class="rail-inner">
+    <span class="rail-name">First principles · DSA</span>
+    <div class="rail-links">
+      <a href="../index.html" style="font-weight:600;">⌂ Course map</a>
+      <a href="#start">Start</a>
+      <a href="#story">Story</a>
+      <a href="#twoptr">Two pointers</a>
+      <a href="#window">Sliding window</a>
+      <a href="#breaks">Breaks</a>
+      <a href="#real">Daily life</a>
+      <a href="#problems">Practice</a>
+      <a href="#code">Code it</a>
+      <a href="#plan">Next</a>
+    </div>
+    <div class="rail-progress" title="Your progress in this module">
+      <div class="rail-bar"><span id="progress-fill"></span></div>
+      <span id="progress-num">0%</span>
+    </div>
+  </div>
+</nav>
+
+<div id="view-m3">
+<header class="hero wrap" id="start">
+  <div class="stepline"><span class="dot">1</span> Start from what you know <span class="rest">· Module 3</span></div>
+  <h1>Two pointers &amp; the sliding window</h1>
+  <p class="big">You've quietly used two pointers four times already: the Spotify shuffle, Move Zeroes, reversing a string, and rotating a grid. This module turns that instinct into two named tools you reach for on purpose.</p>
+
+  <div class="aside-me"><div class="face">👋</div><div class="txt"><b>Good news</b>There's no new data structure here. These are two <em>techniques</em> for walking an array you already understand. They exist to kill one specific waste, and once you see it, you can't unsee it.</div></div>
+
+  <div class="word"><b>Quick recap · The waste we're hunting</b>
+  Lots of problems ask about <strong>pairs</strong> ("two things that add up to X") or <strong>ranges</strong> ("the best stretch of days"). The obvious solution tries every pair or every range with nested loops, which is O(n²). On 100,000 items that's 10 billion steps. We can almost always do it in one pass.</div>
+
+  <p style="margin-top:10px;"><a href="#story" style="color:var(--accent);font-family:var(--sans);font-size:15px;">Here comes the problem ↓</a></p>
+</header>
+
+<section class="wrap" id="story">
+  <div class="stepline"><span class="dot">2</span> The story <span class="rest">· the nested-loop wall</span></div>
+  <h2>Checking every pair is 10 billion steps. There has to be a better way.</h2>
+  <p>A buyer gives you a <strong>sorted</strong> list of house prices and a budget. They want two houses whose prices add up to exactly the budget.</p>
+  <p class="big">Prices: <code>1, 2, 4, 7, 9, 11, 15</code>. Budget: <code>11</code>. Find a pair that sums to 11.</p>
+  <p class="dim small">You could try every pair. But the list is already sorted, smallest to largest. Does that ordering let you avoid checking all of them? Pick whatever feels natural.</p>
+
+  <div class="chips" id="ch3-choices">
+    <button data-choice="a">Try every pair: for each price, check it against every other price</button>
+    <button data-choice="b">Use the sort: start with the smallest and largest, and squeeze inward</button>
+    <button data-choice="c">Honestly, no idea</button>
+  </div>
+
+  <div class="reveal" id="ch3-r-a">
+    <div class="response"><span class="who">It works, but</span>That's the brute force, and it's fine for tiny lists. But it's O(n²): for every price you re-scan the whole list. On big inputs it falls over. And it completely ignores the gift you were handed: the list is sorted. Let's use that gift.</div>
+  </div>
+  <div class="reveal" id="ch3-r-b">
+    <div class="response"><span class="who">That's the move</span>Exactly. Put one finger on the smallest price and one on the largest. Their sum tells you which way to move. Sorted order means every move is a sure thing, never a guess.</div>
+  </div>
+  <div class="reveal" id="ch3-r-c">
+    <div class="response"><span class="who">Honest answer</span>No problem. Here's the trick: put one finger at each end of the sorted list. If their sum is too big, you need a smaller number, so move the right finger left. If it's too small, move the left finger right. Watch it below.</div>
+  </div>
+
+  <div class="reveal" id="ch3-vars">
+    <p style="margin-top:22px;">The key insight: on a <strong>sorted</strong> list, the sum of the two ends tells you exactly which finger to move. Too big? The right end is the only thing you can shrink. Too small? The left end is the only thing you can grow. You never waste a move.</p>
+    <button class="primary" id="ch3-continue">Show me the technique →</button>
+  </div>
+  <p style="margin-top:26px;"><button class="skip" id="skip-story">I get it already, skip ahead</button></p>
+</section>
+
+<div class="reveal" id="rest">
+
+<section class="wide" id="twoptr">
+  <div class="wrap" style="padding:0;">
+    <div class="stepline"><span class="dot">3</span> Technique one <span class="rest">· two pointers, converging</span></div>
+    <h2>Two pointers: start at both ends, squeeze inward</h2>
+    <p>Put a <strong>left</strong> pointer at the smallest value and a <strong>right</strong> pointer at the largest. Look at their sum, then move exactly one pointer based on what you need. Press step and watch it hunt for the pair.</p>
+  </div>
+  <div class="machine">
+    <div class="label">Sorted prices · target 11 · two pointers converging</div>
+    <div class="cells-outer"><div class="cells" id="tp-cells"></div></div>
+    <div class="formula" id="tp-formula">left + right = <b id="tp-sum">?</b> &nbsp; (target 11)</div>
+    <div class="mrow">
+      <button id="btn-tp-step">Step</button>
+      <button id="btn-tp-reset">Reset</button>
+    </div>
+    <div class="mnote" id="tp-msg">Two lit lockers are the pointers. Each step compares their sum to the target and moves one pointer. No pair is ever checked twice.</div>
+  </div>
+  <div class="wrap" style="padding:0;">
+    <div class="word"><b>Why it's O(n)</b>
+    Each step moves a pointer inward by one, and the two pointers only ever move toward each other. So together they take at most n steps before they meet. One pass, not n passes. That's the whole win: O(n²) becomes O(n).</div>
+
+    <div class="cp" data-cp="cp1" data-answer="b">
+      <div class="cp-tag">Quick check</div>
+      <div class="cp-q">Left + right is bigger than the target. Which pointer do you move, and why?</div>
+      <div class="cp-opts">
+        <button data-opt="a">Move the left pointer right, to get a bigger number</button>
+        <button data-opt="b">Move the right pointer left, because that's the only way to make the sum smaller</button>
+        <button data-opt="c">Move both, to save time</button>
+      </div>
+      <div class="cp-fb"><b>Right</b>The sum is too big, so you need a smaller value. On a sorted list, stepping the right pointer left is the only move that shrinks the sum. That certainty is exactly what sorting buys you.</div>
+      <div class="cp-nudge">The sum is too big, so you want it smaller. On a sorted list, which end holds the value you can shrink? Try again.</div>
+    </div>
+
+    <div class="aside-me"><div class="face">⚠️</div><div class="txt"><b>The one catch</b>Converging two pointers relies on the list being <strong>sorted</strong>. Without an order, moving a pointer tells you nothing, so the trick falls apart. If the data isn't sorted, either sort it first (Module 9) or reach for a different tool (hash maps, Module 7).</div></div>
+  </div>
+</section>
+
+<section class="wide" id="window">
+  <div class="wrap" style="padding:0;">
+    <div class="stepline"><span class="dot">4</span> Technique two <span class="rest">· the sliding window</span></div>
+    <h2>Sliding window: reuse the range instead of rebuilding it</h2>
+    <p>Now a different pain. "What's the best stretch of k days?" The lazy way re-adds every window from scratch, which is O(n × k). But two neighbouring windows overlap almost entirely. So when the window slides one step right, just <strong>add the new value and subtract the one that fell off</strong>. Press step and watch the sum update without recounting.</p>
+  </div>
+  <div class="machine">
+    <div class="label">Daily spend · window of 3 days · slide it right</div>
+    <div class="cells-outer"><div class="cells" id="sw-cells"></div></div>
+    <div class="formula">window sum = <b id="sw-sum">?</b> &nbsp;·&nbsp; best so far = <b id="sw-max">?</b></div>
+    <div class="mrow">
+      <button id="btn-sw-step">Slide right</button>
+      <button id="btn-sw-reset">Reset</button>
+    </div>
+    <div class="mnote" id="sw-msg">The lit lockers are the current window. Each slide does one add and one subtract, no matter how wide the window is. That's the trick.</div>
+  </div>
+  <div class="wrap" style="padding:0;">
+    <div class="word"><b>Two flavours of window</b>
+    A <strong>fixed</strong> window (like this one) stays the same width and just slides. A <strong>variable</strong> window grows its right edge to include more, then shrinks its left edge when a rule breaks (for example "no repeated letters"). Same idea, both edges are just pointers moving forward, never backward.</div>
+
+    <div class="cp" data-cp="cp2" data-answer="a">
+      <div class="cp-tag">Quick check</div>
+      <div class="cp-q">A window of width 500 slides one step right. How much work to get the new sum?</div>
+      <div class="cp-opts">
+        <button data-opt="a">Constant: add the one entering, subtract the one leaving</button>
+        <button data-opt="b">500 additions, you re-add the whole window</button>
+        <button data-opt="c">It depends on the numbers inside</button>
+      </div>
+      <div class="cp-fb"><b>Exactly</b>The two windows share 499 of their 500 values. Only one enters and one leaves, so it's one add and one subtract, O(1) per slide. That's what turns O(n × k) into O(n).</div>
+      <div class="cp-nudge">The old and new windows overlap almost entirely. How many values actually change when you slide by one? Try again.</div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="whys">
+  <div class="stepline"><span class="dot">✦</span> Bonus <span class="rest">· go deeper, optional</span></div>
+  <h2>Still curious? Keep asking why</h2>
+  <p class="dim small">Optional. Press <em>why?</em> to open each reason.</p>
+
+  <div class="claim">
+    <div class="head">Two pointers and sliding window are secretly the same idea.<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>Both keep two markers into the array and move them so that <strong>every element is visited a constant number of times</strong>, and neither marker ever goes backward. Converging two pointers move toward each other; a sliding window moves both forward. The shared promise is the same: one pass, O(n), no re-scanning.</p>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="head">A variable window can shrink and grow, yet still be O(n).<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>It feels like cheating: the left edge sometimes jumps forward several times in a row. But across the whole run, the left edge can only move forward a total of n times, and so can the right. Two markers, each advancing at most n steps, means at most 2n moves total. Still one pass.</p>
+    </div>
+  </div>
+
+  <div class="claim">
+    <div class="head">Sorting first can be worth it, even though sorting costs O(n log n).<button class="why-btn">why?</button></div>
+    <div class="why-panel">
+      <p>If a problem is naturally O(n²) and sorting unlocks a clean O(n) two-pointer pass, your total becomes O(n log n) for the sort plus O(n) for the scan, which is O(n log n) overall. That's a huge win over O(n²). Recognising "if this were sorted, two pointers would work" is a real interview skill.</p>
+    </div>
+  </div>
+</section>
+
+<section class="wide" id="breaks">
+  <div class="wrap" style="padding:0;">
+    <div class="stepline"><span class="dot">5</span> Where it hurts <span class="rest">· when these don't apply</span></div>
+    <h2>Powerful, but not universal</h2>
+    <p>These techniques are sharp tools for the right job and useless for the wrong one. Knowing when <em>not</em> to reach for them is half the skill.</p>
+  </div>
+  <div class="wrap" style="padding:0;">
+    <div class="cards">
+      <div class="rcard"><h3>Two pointers needs order</h3><span class="dim">Converging pointers only work when moving a pointer reliably changes the answer one way, which usually means the data is sorted. On unsorted data, a pointer move tells you nothing.</span></div>
+      <div class="rcard"><h3>Windows need a "monotone" rule</h3><span class="dim">A sliding window works when growing the window makes a quantity only go up (like a sum of positives) so shrinking can fix it. With negative numbers, "window sum" stops behaving, and you need a different idea (prefix sums, Arc 3).</span></div>
+      <div class="rcard"><h3>Not for "any pair anywhere"</h3><span class="dim">If a problem needs pairs that aren't about order or contiguity, two pointers won't reach them. That's often a signal for a hash map instead.</span></div>
+    </div>
+    <div class="aside-me"><div class="face">🔑</div><div class="txt"><b>The reflex to build</b>When you see "pair that sums to X" on sorted data, think two pointers. When you see "best contiguous stretch" or "longest substring with a rule", think sliding window. Naming the pattern fast is most of the battle.</div></div>
+  </div>
+</section>
+
+<section class="wrap" id="real">
+  <div class="stepline"><span class="dot">6</span> Daily life <span class="rest">· where these hide</span></div>
+  <h2>Where two pointers and windows show up</h2>
+  <div class="cards">
+    <div class="rcard"><h3>Merging two sorted lists</h3><span class="dim">Your music app merging two sorted playlists walks both with a pointer each, always taking the smaller next. That's two pointers on two lists.</span></div>
+    <div class="rcard"><h3>Video buffering</h3><span class="dim">A player keeps a window of "seconds around now" loaded, sliding it forward as you watch and dropping what's behind.</span></div>
+    <div class="rcard"><h3>Rate limits</h3><span class="dim">"No more than 100 requests in any 60-second window" is literally a sliding window over timestamps.</span></div>
+    <div class="rcard"><h3>Analytics</h3><span class="dim">"Best 7-day stretch of sales" or "rolling average" are windows sliding across a row of daily numbers.</span></div>
+    <div class="rcard"><h3>Text selection</h3><span class="dim">Finding the shortest snippet that contains all your search words is a classic variable window over the document.</span></div>
+    <div class="rcard"><h3>Networking</h3><span class="dim">TCP's "sliding window" controls how much data is in flight at once. Same name, same idea, at the heart of the internet.</span></div>
+  </div>
+
+  <div class="next-card">
+    <h3>Coming next: the array runs out of room</h3>
+    You've now squeezed arrays for everything they're worth: fast access, two pointers, windows, grids. But every technique so far has bumped into the same wall from Module 0: inserting in the middle is painfully slow. Arc 1 is where we finally fix that. First up, Module 4: the <strong>linked list</strong>, born exactly where the array hurts.
+  </div>
+</section>
+
+<section class="wrap" id="problems">
+  <div class="stepline"><span class="dot">7</span> Practice <span class="rest">· think first</span></div>
+  <h2>Name the technique before you code</h2>
+  <p class="dim small">Three situations. For each, the first question is always the same: is this a pair-on-sorted problem (two pointers) or a best-contiguous-stretch problem (sliding window)? Hints lead, they don't tell.</p>
+
+  <div class="problem" id="p1">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 1 · warm-up</div>
+    <div class="scenario">A fitness app has a sorted list of workout durations. A user wants two sessions that add up to exactly 60 minutes. Find such a pair, fast.</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p1">
+        <div class="hint"><b>Hint 1 · what's the shape?</b>A pair that sums to a target, on a list that's already sorted. Which of today's two tools fits "pair" plus "sorted"?</div>
+        <div class="hint"><b>Hint 2 · set up the pointers</b>Where do you start left and right so their sum is as small and as large as possible?</div>
+        <div class="hint"><b>Hint 3 · the decision</b>Sum too big, move which pointer? Too small, move which? When do you stop?</div>
+      </div>
+      <button data-next-hint="p1">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p1-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p1-d">
+        <p style="margin-top:12px;">"Pair" plus "sorted" is the two-pointer flag. Left at the start, right at the end. Sum too big, step right down. Too small, step left up. Equal, you found it. Stop when the pointers meet. O(n), and it only works because the list is sorted. <strong>Recognising the shape is the whole solve. The code is five lines.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="problem" id="p2">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 2 · the window</div>
+    <div class="scenario">A trading app wants the highest total over any 5 consecutive days from a long list of daily profits. It currently re-adds all 5 numbers for every starting day and it's too slow.</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p2">
+        <div class="hint"><b>Hint 1 · what's the shape?</b>"Best total over any 5 consecutive days" is a best-contiguous-stretch problem. Which tool?</div>
+        <div class="hint"><b>Hint 2 · the waste</b>When you move from days 1-5 to days 2-6, how many of the numbers are the same? How many actually change?</div>
+        <div class="hint"><b>Hint 3 · the update</b>Instead of re-adding 5 numbers, what single add and single subtract turns the old sum into the new one?</div>
+        <div class="hint"><b>Hint 4 · track the best</b>As the window slides across, what do you keep updating so you can report the answer at the end?</div>
+      </div>
+      <button data-next-hint="p2">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p2-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p2-d">
+        <p style="margin-top:12px;">Fixed sliding window. Add the first 5 once. Then for each slide, add the entering day and subtract the leaving day, keeping a running max. Each slide is O(1), so the whole thing is O(n) instead of O(n × 5). <strong>The overlap between neighbouring windows is the waste you delete.</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="problem" id="p3">
+    <div class="ltag" style="margin-bottom:10px; color:var(--accent);">Problem 3 · the growing-and-shrinking window</div>
+    <div class="scenario">A messaging app highlights the longest run of recent messages with no repeated word. The run can be any length. Find the length of the longest stretch with all-distinct words.</div>
+    <div class="layer"><div class="ltag">Lead your own thinking</div>
+      <div class="hints" data-hints="p3">
+        <div class="hint"><b>Hint 1 · fixed or variable?</b>The stretch can be any length, so the window width isn't fixed. What kind of window grows and shrinks?</div>
+        <div class="hint"><b>Hint 2 · grow the right</b>Keep extending the right edge, adding one word at a time. What do you need to remember to detect a repeat?</div>
+        <div class="hint"><b>Hint 3 · shrink the left</b>The moment a repeat appears inside the window, how do you move the left edge to make the window valid again?</div>
+        <div class="hint"><b>Hint 4 · the record</b>After every step, what do you compare against your best-so-far length?</div>
+      </div>
+      <button data-next-hint="p3">Reveal hint 1</button>
+    </div>
+    <div class="layer">
+      <div class="ltag">Discussion</div>
+      <button data-reveal="p3-d">I've decided my answer, show the discussion</button>
+      <div class="reveal" id="p3-d">
+        <p style="margin-top:12px;">Variable window. Grow the right edge and remember where you last saw each word. When the incoming word is already inside the window, jump the left edge just past that earlier copy, so the window has no repeats again. Track the largest width you ever reached. Both edges only move forward, so it's O(n). <strong>Grow to include, shrink to obey the rule.</strong> This is the exact problem foreshadowed back in Module 1.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="code">
+  <div class="stepline"><span class="dot">8</span> Now code it <span class="rest">· C++, interview-style</span></div>
+  <h2>One of each, same five-step method</h2>
+  <p>One converging two-pointer problem, one variable sliding window. Same method: understand, brute force, find the waste, pseudo-code, then code and cost.</p>
+  <p class="dim small">Try each yourself first. Open a step only after a real attempt.</p>
+
+  <div class="lc">
+    <div class="lc-head"><span class="lc-tag lc-easy">Easy · two pointers</span><span class="lc-src">LeetCode 167 · Two Sum II (sorted input)</span></div>
+    <div class="lc-statement">
+      <p>Given a <strong>sorted</strong> array and a target, return the 1-based positions of the two numbers that add up to the target. Exactly one answer exists.</p>
+      <p class="lc-eg">Example: <code>[2,7,11,15]</code>, target <code>9</code> → <code>[1,2]</code> (2 + 7 = 9)</p>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 1 · Understand it</div>
+      <button class="unfold-btn">Say it back in plain words</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Input: a sorted array and a target sum. Output: the two positions (counting from 1) whose values add up to the target. We're promised exactly one pair exists, so we don't have to handle "no answer".</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 2 · Brute force first</div>
+      <button class="unfold-btn">The dumb slow way</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Two nested loops: for each value, check it against every value after it. It works and it's easy. But it's O(n²), and it throws away the fact that the array is sorted. That wasted gift is our clue.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 3 · Find the waste</div>
+      <button class="unfold-btn">Use the sort</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Put <code>left</code> at the start and <code>right</code> at the end. If their sum is too big, only the right value can shrink it, so step right down. If too small, step left up. Each comparison eliminates a whole row of pairs the brute force would have checked. One pass, O(n).</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 4 · Pseudo-code it</div>
+      <button class="unfold-btn">Plain-language steps</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Pseudo-code · converging pointers</div>
+        <pre>left = 0, right = last index
+while left &lt; right:
+    sum = nums[left] + nums[right]
+    if sum == target: return (left+1, right+1)
+    if sum &lt; target: left = left + 1
+    else: right = right - 1</pre>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 5 · Code it, then cost it</div>
+      <button class="unfold-btn">Show the code and the cost</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">C++</div>
+        <pre><span class="k">vector</span>&lt;<span class="k">int</span>&gt; twoSum(<span class="k">vector</span>&lt;<span class="k">int</span>&gt;&amp; nums, <span class="k">int</span> target) {
+    <span class="k">int</span> left = 0, right = nums.size() - 1;
+    <span class="k">while</span> (left &lt; right) {
+        <span class="k">int</span> sum = nums[left] + nums[right];
+        <span class="k">if</span> (sum == target) <span class="k">return</span> {left + 1, right + 1};
+        <span class="k">if</span> (sum &lt; target) left++;
+        <span class="k">else</span> right--;
+    }
+    <span class="k">return</span> {};
+}</pre>
+        <p><strong>Time: O(n)</strong>, the pointers meet after one pass. <strong>Space: O(1)</strong>, just two indices.</p>
+        <p style="color:var(--muted);font-size:15px;">Connects to: the exact same converging-pointer move as the demo above, and the reverse-in-place from Module 1.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="lc">
+    <div class="lc-head"><span class="lc-tag lc-med">Medium · sliding window</span><span class="lc-src">LeetCode 3 · Longest Substring Without Repeating Characters</span></div>
+    <div class="lc-statement">
+      <p>Return the length of the longest run in a string that has no repeated character.</p>
+      <p class="lc-eg">Example: <code>"abcabcbb"</code> → <code>3</code> (the run <code>"abc"</code>)</p>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 1 · Understand it</div>
+      <button class="unfold-btn">Say it back in plain words</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Find the longest contiguous stretch of characters where nothing repeats, and return its length. The stretch can be anywhere and any length. Edge case: an empty string gives 0.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 2 · Brute force first</div>
+      <button class="unfold-btn">The dumb slow way</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Try every starting position, and from each, extend until you hit a repeat, checking each new stretch for duplicates. That's roughly O(n²) or worse. It re-examines the same characters over and over as the start moves.</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 3 · Find the waste (variable window)</div>
+      <button class="unfold-btn">Grow and shrink one window</button>
+      <div class="unfold"><div class="lc-body">
+        <p>Keep one window and remember the last position where each character was seen. Extend the right edge one character at a time. If the new character was already seen <em>inside</em> the current window, jump the left edge to just past that earlier copy, which instantly removes the repeat. Track the widest the window ever gets. Both edges only move forward, so it's O(n).</p>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 4 · Pseudo-code it</div>
+      <button class="unfold-btn">Plain-language steps</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">Pseudo-code · variable window</div>
+        <pre>lastSeen = position of each character, start all as -1
+left = 0, best = 0
+for right from 0 to last:
+    c = s[right]
+    if lastSeen[c] &gt;= left:
+        left = lastSeen[c] + 1     // jump past the repeat
+    lastSeen[c] = right
+    best = max(best, right - left + 1)
+return best</pre>
+      </div></div>
+    </div>
+
+    <div class="lc-step">
+      <div class="lc-snum">Step 5 · Code it, then cost it</div>
+      <button class="unfold-btn">Show the code and the cost</button>
+      <div class="unfold"><div class="lc-body">
+        <div class="codelabel">C++</div>
+        <pre><span class="k">int</span> lengthOfLongestSubstring(<span class="k">string</span> s) {
+    <span class="k">vector</span>&lt;<span class="k">int</span>&gt; lastSeen(128, -1);
+    <span class="k">int</span> left = 0, best = 0;
+    <span class="k">for</span> (<span class="k">int</span> right = 0; right &lt; s.size(); right++) {
+        <span class="k">char</span> c = s[right];
+        <span class="k">if</span> (lastSeen[c] &gt;= left)
+            left = lastSeen[c] + 1;
+        lastSeen[c] = right;
+        best = max(best, right - left + 1);
+    }
+    <span class="k">return</span> best;
+}</pre>
+        <p><strong>Time: O(n)</strong>, each character enters and leaves the window once. <strong>Space: O(1)</strong>, a fixed 128-slot table of last-seen positions.</p>
+        <p style="color:var(--muted);font-size:15px;">Connects to: the "turn a character into an index" trick from Module 1, now powering the window. This is the problem Module 1 promised you'd solve here.</p>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="aside-me"><div class="face">🔁</div><div class="txt"><b>The loop continues</b>Same five steps. Below is your two-pointer and window problem set, easy first. Solve with the method, then re-solve the tricky ones in a week.</div></div>
+
+  <h3 style="margin-top:30px;font-family:var(--sans);">Your problem set · easy first</h3>
+  <p class="dim small">The first three are two pointers, the last two are windows. Name the technique before you write a line.</p>
+  <div class="probset">
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">Valid Palindrome</span> <span class="pnote">Two pointers from both ends, skipping non-letters.</span></div>
+    <div class="probrow"><span class="lc-tag lc-easy">Easy</span><span class="pname">Squares of a Sorted Array</span> <span class="pnote">Two pointers from the ends, biggest square first.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Container With Most Water</span> <span class="pnote">Two pointers, move the shorter wall inward.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Minimum Size Subarray Sum</span> <span class="pnote">Variable window: grow to reach the target, shrink to minimise.</span></div>
+    <div class="probrow"><span class="lc-tag lc-med">Medium</span><span class="pname">Max Consecutive Ones III</span> <span class="pnote">Variable window with a budget of flips. <b>Connects to:</b> grow and shrink.</span></div>
+  </div>
+  <p class="dim small">Solve the easy ones with the five steps before the mediums. Always finish at real C++ and a stated O() cost.</p>
+</section>
+
+<hr class="sep">
+
+<section class="wrap" id="understanding">
+  <div class="eyebrow">Your progress · measured in understanding</div>
+  <h2>The two-pointers &amp; window checklist</h2>
+  <p class="dim small">Tick a box only when you could explain that line out loud, with this page closed. Your ticks are saved on this device.</p>
+  <div class="check" id="checklist">
+    <label><input type="checkbox" data-key="waste"><span>I can explain <strong>why brute-force pair and range scans are O(n²)</strong>, and why that's wasteful</span></label>
+    <label><input type="checkbox" data-key="converge"><span>I can use <strong>converging two pointers</strong> on a sorted array and explain why moving the right pointer left shrinks the sum</span></label>
+    <label><input type="checkbox" data-key="sorted"><span>I can explain <strong>why converging two pointers needs sorted data</strong> to work</span></label>
+    <label><input type="checkbox" data-key="window"><span>I can use a <strong>sliding window</strong> to avoid recomputing overlapping ranges, updating by add-new and subtract-old</span></label>
+    <label><input type="checkbox" data-key="varwindow"><span>I can tell a <strong>fixed window from a variable window</strong>, and know when to grow the right edge versus shrink the left</span></label>
+    <label><input type="checkbox" data-key="oneidea"><span>I can explain <strong>why both techniques are O(n)</strong>: two markers that only ever move forward</span></label>
+    <label><input type="checkbox" data-key="solved"><span>I <strong>solved both coding problems myself</strong> in C++ before opening the steps</span></label>
+  </div>
+  <p id="check-msg" class="small dim"></p>
+</section>
+
+<section class="wrap" id="plan">
+  <div class="eyebrow">The road ahead</div>
+  <h2>End of Arc 0. You've squeezed the array dry.</h2>
+  <p>Four modules in, you've taken the humble array as far as it goes: instant access, strings, grids, and now two disciplined ways to scan it in a single pass. Every trick has been a variation on one theme, moving smart markers over contiguous memory.</p>
+  <div class="week">
+    <h3><span>Next · Arc 1</span> Module 4 · Linked lists</h3>
+    <ul>
+      <li>Every technique so far has hit the same wall: inserting in the middle of an array is O(n).</li>
+      <li>Arc 1 is the set of structures invented to escape that exact pain.</li>
+      <li>The linked list is first: what if each value simply held the address of the next, so nothing ever has to shift?</li>
+    </ul>
+    <div class="goal">When you're ready, tell Claude: "Module 4: Linked lists".</div>
+  </div>
+  <p class="dim small" style="margin-top:20px;">Finish the checklist above first. You now have a real toolkit: the address sum, the cache, two pointers, and the window. Arc 1 starts fixing the array's oldest wound.</p>
+</section>
+
+<footer>
+  First principles · Module 3 of the why-first DSA course · two smart markers beat a thousand passes
+</footer>
+
+</div>
+</div>
+
+<script src="../assets/module3.js"></script>
+</body>
+</html>
