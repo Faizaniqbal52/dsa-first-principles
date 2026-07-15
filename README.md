@@ -15,6 +15,9 @@ on the course map, and you pick a live module to start.
 
 - **Story first, definitions last.** Every topic starts with the real problem
   that forced someone to invent it. You feel the pain before you meet the fix.
+- **Bite-sized steps, not a wall of text.** Each module is a step-by-step flow,
+  one short screen at a time with Back/Next and a progress bar, so it never feels
+  like an endless page.
 - **You do, not just read.** Interactive demos let you watch memory, pointers,
   grids and windows actually move, and quick checkpoints test your understanding
   as you go.
@@ -82,6 +85,7 @@ modules/
 assets/
   base.css              shared styles for every page
   map.js                renders the course map + progress
+  stepper.js            turns each module into a step-by-step flow
   module0.js            per-module interactivity
   module1.js
   module2.js
