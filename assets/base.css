@@ -61,6 +61,22 @@ body {
 .rail-bar { width: 90px; height: 5px; background: var(--line); border-radius: 99px; overflow: hidden; }
 .rail-bar span { display: block; height: 100%; width: 0%; background: var(--good); border-radius: 99px; transition: width 0.4s; }
 
+/* On phones, keep the sticky bar short: brand + progress on one line,
+   section links on a single horizontally-scrollable row below. */
+@media (max-width: 640px) {
+  .rail-inner { padding: 8px 14px; gap: 8px 10px; }
+  .rail-name { order: 1; flex: 1 1 auto; }
+  .rail-progress { order: 2; flex: 0 0 auto; }
+  .rail-links {
+    order: 3; flex: 0 0 100%; flex-wrap: nowrap;
+    overflow-x: auto; gap: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .rail-links::-webkit-scrollbar { display: none; }
+  .rail-links a { flex: 0 0 auto; white-space: nowrap; }
+}
+
 .wrap { max-width: 660px; margin: 0 auto; padding: 0 20px; }
 .wide { max-width: 880px; margin: 0 auto; padding: 0 20px; }
 .eyebrow {
